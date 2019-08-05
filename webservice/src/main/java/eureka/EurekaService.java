@@ -158,7 +158,7 @@ public class EurekaService {
             return new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
         }
         catch (IOException ex) {
-            throw new InternalServerErrorException(ex.getMessage());
+            throw new BadRequestException("The file could not be opened.");
         }
     }
 }

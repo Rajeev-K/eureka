@@ -46,7 +46,16 @@ export class SearchController extends MvcRouter.Controller {
 
     private onFileClick(path: string): void {
         fetch(`/eureka-service/api/engine/file?path=${encodeURIComponent(path)}`)
-            .then(response => response.text())
+            .then(response => {
+                if (response.status === 200) {
+                    this.searchPage.displayError('');
+                    return response.text();
+                }
+                else {
+                    this.searchPage.displayError("The file could not be opened.");
+                    return '';
+                }
+            })
             .then(result => this.searchPage.displaySourceCode(result, 'javascript'))
             .catch(error => this.searchPage.displayError(error));
     }
