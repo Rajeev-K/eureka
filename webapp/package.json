@@ -1,0 +1,25 @@
+{
+    "name": "eureka",
+    "version": "1.0.0",
+    "description": "Lucene-based search engine for your source code",
+    "main": "wwwroot/all.js",
+    "scripts": {
+        "build": "gulp",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "lucene",
+        "search",
+        "code"
+    ],
+    "author": "rajeev-k",
+    "license": " GPL-3.0",
+    "devDependencies": {
+        "gulp": "^4.0.2",
+        "gulp-rename": "^1.4.0",
+        "gulp-sass": "^4.0.2",
+        "gulp-typescript": "^5.0.1",
+        "monaco-editor": "^0.17.1",
+        "typescript": "^3.5.3"
+    }
+}

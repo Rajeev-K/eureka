@@ -1,0 +1,18 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "module": "amd",
+        "outFile": "wwwroot/all.js",
+        "target": "es5",
+        "lib": [ "dom", "dom.iterable", "es6" ],
+        "noImplicitThis": true,
+        "jsx": "react",
+        "reactNamespace": "UIBuilder",
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "sourceMap": true
+    },
+    "exclude": [
+        "node_modules", "wwwroot"
+    ]
+}

@@ -1,0 +1,21 @@
+FROM eureka-base
+
+# Replace server.xml in order to enable url rewrite
+COPY conf/server.xml ${TOMCAT_HOME}/conf/server.xml
+
+# Install url rewrite settings
+RUN mkdir -p ${TOMCAT_HOME}/conf/Catalina/localhost
+COPY conf/rewrite.config ${TOMCAT_HOME}/conf/Catalina/localhost/rewrite.config
+
+# Install webservice
+RUN mkdir -p ${TOMCAT_HOME}/webapps/eureka-service
+COPY webservice/target/eureka-service/ ${TOMCAT_HOME}/webapps/eureka-service/
+
+# Install webapp
+RUN mkdir -p ${TOMCAT_HOME}/webapps/search/lib
+COPY webapp/wwwroot/ ${TOMCAT_HOME}/webapps/search/
+
+# To view web pages:
+#    http://localhost:8888/search
+
+CMD /usr/local/share/tomcat/bin/catalina.sh run

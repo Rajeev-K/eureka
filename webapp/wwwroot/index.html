@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no" />
+    <title>eureka!</title>
+    <link rel="stylesheet" href="~/app.css" type="text/css" />
+    <link rel="stylesheet" href="~/fontawesome/css/all.min.css" type="text/css" />
+    <script src="~/uibuilder-1.6.0.js"></script>
+    <script src="~/mvc-router-1.0.3.js"></script>
+    <script src="~/require.js"></script>
+    <script src="~/all.js"></script>
+    <script>
+         window.onload = function () {
+             require.config({
+                 paths: {
+                     'vs': '~/monaco-editor/min/vs'
+                 }
+             });
+             require(['App'], function (App) {
+                 App.startup();
+             });
+         };
+    </script>
+</head>
+<body>
+    <div id="app-body"></div>
+</body>
+</html>

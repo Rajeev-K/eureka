@@ -1,0 +1,5 @@
+*.class
+app.css
+node_modules/
+package-lock.json
+webservice/target
