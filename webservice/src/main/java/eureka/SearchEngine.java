@@ -49,8 +49,6 @@ public class SearchEngine {
     private volatile String currentlyIndexing;
     private static final String IndexPath = "/projects/eureka-index";
     private static final String ContentsField = "contents";
-    private static final String FolderField = "folder";
-    private static final String FileNameField = "filename";
     private static final String PathField = "path";
     private String[] indexableExtensions = {
         ".ts", ".tsx", ".js",
@@ -121,19 +119,13 @@ public class SearchEngine {
      * @folder Folder of the file, as specified by the user. Used to display all indexed folders.
      * @file The full path to the file.
      */
-    public void addFileToIndex(String folder, Path file, long lastModified) throws IOException {
+    public void addFileToIndex(String folder, Path filePath, long lastModified) throws IOException {
         InputStream stream = null;
         try {
-            stream = Files.newInputStream(file);
+            stream = Files.newInputStream(filePath);
             Document doc = new Document();
 
-            Field folderField = new StringField(FolderField, folder, Field.Store.YES);
-            doc.add(folderField);
-
-            Field fileNameField = new StringField(FileNameField, file.getFileName().toString(), Field.Store.YES);
-            doc.add(fileNameField);
-
-            Field pathField = new StringField(PathField, file.toString(), Field.Store.YES);
+            Field pathField = new StringField(PathField, filePath.toString(), Field.Store.YES);
             doc.add(pathField);
 
             doc.add(new LongPoint("modified", lastModified));
@@ -150,7 +142,7 @@ public class SearchEngine {
             }
             else {
                 // Replace old file matching the exact path, if present.
-                indexWriter.updateDocument(new Term("path", file.toString()), doc);
+                indexWriter.updateDocument(new Term(PathField, filePath.toString()), doc);
             }
         }
         finally {
@@ -221,9 +213,6 @@ public class SearchEngine {
         }
     }
 
-    public void removeFromIndex(String folderPath) {
-    }
-
     public void deleteAll() throws IOException {
         log.info("deleting all documents from index");
         indexWriter.deleteAll();
@@ -259,7 +248,7 @@ public class SearchEngine {
             List<SearchResult> searchResults = new ArrayList<SearchResult>();
             for (int i = 0; i < hits.length; i++) {
                 Document doc = searcher.doc(hits[i].doc);
-                String path = doc.get("path");
+                String path = doc.get(PathField);
                 searchResults.add(new SearchResult(path, hits[i].score));
             }
             return searchResults;
