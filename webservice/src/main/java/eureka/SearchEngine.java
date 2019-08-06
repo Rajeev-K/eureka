@@ -52,10 +52,12 @@ public class SearchEngine {
     private static final String PathField = "path";
     private String[] indexableExtensions = {
         ".ts", ".tsx", ".js",
-        ".cs", ".java", ".scala", ".cpp", ".h", ".c", ".cxx", ".hpp",
-        ".md", ".txt", ".html",
+        ".cs", ".java", ".scala", ".cpp", ".h", ".hh", ".c", ".cc", ".cxx", ".hpp", ".hxx",
+        ".go", ".lua", ".py", ".rb" /* ruby */, ".rs" /* rust */, ".swift", ".sh",
+        ".md", ".txt", ".html", ".xhtml", ".csptml",
+        ".asp", ".aspx", ".jsp", ".sql", ".m" /* objective-c */, ".php", ".ps1",
         ".sln", ".csproj", ".json", ".yml", ".xml",
-        ".css", ".scss",
+        ".css", ".scss", ".less",
         ".cmd", ".sh"
     };
     private String[] skippableFolders = {

@@ -2,6 +2,7 @@
 
 import { App } from "../App";
 import { SearchPage, SearchPageProps } from "../views/SearchPage";
+import * as Utils from "../Utils";
 
 export class SearchController extends MvcRouter.Controller {
     private searchPage: SearchPage;
@@ -44,6 +45,10 @@ export class SearchController extends MvcRouter.Controller {
         this.app.navigate('/admin');
     }
 
+    private getLanguageFromPath(path: string): string {
+        return Utils.getLanguageFromExtension(Utils.getFilenameExtension(path, true));
+    }
+
     private onFileClick(path: string): void {
         fetch(`/eureka-service/api/engine/file?path=${encodeURIComponent(path)}`)
             .then(response => {
@@ -56,7 +61,10 @@ export class SearchController extends MvcRouter.Controller {
                     return '';
                 }
             })
-            .then(result => this.searchPage.displaySourceCode(result, 'javascript'))
+            .then(text => {
+                const language = this.getLanguageFromPath(path);
+                this.searchPage.displaySourceCode(text, language);
+            })
             .catch(error => this.searchPage.displayError(error));
     }
 

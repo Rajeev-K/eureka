@@ -9,7 +9,12 @@ function isValidExtension(ext: string): boolean {
     return true;
 }
 
-export function getFilenameExtension(path: string): string {
+/**
+ * Gets filename extension such as .java or .tsx
+ * Allows multi-segmented extensions such as .d.ts unless oneSegmentOnly is set to true.
+ * Returns null if path is null. Returns empty string if path has no extension.
+ */
+export function getFilenameExtension(path: string, oneSegmentOnly?: boolean): string {
     if (!path)
         return null;
     const elements = path.split('/');
@@ -21,7 +26,7 @@ export function getFilenameExtension(path: string): string {
     const ext1 = parts[parts.length - 1];
     if (isValidExtension(ext1)) {
         ext = ext1;
-        if (parts.length > 2) {
+        if (!oneSegmentOnly && parts.length > 2) {
             const ext2 = parts[parts.length - 2];
             if (isValidExtension(ext2)) {
                 ext = ext2 + '.' + ext;
@@ -29,4 +34,55 @@ export function getFilenameExtension(path: string): string {
         }
     }
     return ext ? ('.' + ext) : ext;
+}
+
+const extensionMap = {
+    ".txt":     "plaintext",
+    ".json":    "json",
+    ".cmd":     "bat",
+    ".c":       "c",
+    ".h":       "h",
+    ".cpp":     "cpp",
+    ".hpp":     "h",
+    ".cs":      "csharp",
+    ".css":     "css",
+    ".go":      "go",
+    ".html":    "html",
+    ".xhtml":   "html",
+    ".jsp":     "html",
+    ".asp":     "html",
+    ".aspx":    "html",
+    ".java":    "java",
+    ".js":      "javascript",
+    ".jsx":     "javascript",
+    ".less":    "less",
+    ".lua":     "lua",
+    ".md":      "markdown",
+    ".m":       "objective-c",
+    ".php":     "php",
+    ".ps1":     "powershell",
+    ".py":      "python",
+    ".cshtml":  "razor",
+    ".rb":      "ruby",
+    ".rs":      "rust",
+    ".scss":    "scss",
+    ".sql":     "sql",
+    ".swift":   "swift",
+    ".ts":      "typescript",
+    ".tsx":     "typescript",
+    ".xml":     "xml",
+    ".yml":     "yaml",
+    ".yaml":    "yaml",
+    ".clj":     "clojure",
+    ".sh":      "shell",
+    ".pl":      "perl"
+};
+
+export function getLanguageFromExtension(extension: string): string {
+    if (!extension)
+        return "plaintext";
+    else if (extensionMap.hasOwnProperty(extension))
+        return extensionMap[extension];
+    else
+        return "plaintext";
 }
