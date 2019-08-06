@@ -7,10 +7,12 @@
 // GET    http://localhost:8888/eureka-service/api/engine/file?path=/projects/foo
 // POST   http://localhost:8888/eureka-service/api/engine/index?path=/projects/foo
 // DELETE http://localhost:8888/eureka-service/api/engine/index
+// GET    http://localhost:8888/eureka-service/api/engine/folders
 
 package eureka;
 
 import java.util.List;
+import java.util.ArrayList;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.DELETE;
@@ -27,7 +29,10 @@ import org.glassfish.jersey.media.sse.OutboundEvent;
 import org.glassfish.jersey.media.sse.SseFeature;
 import java.nio.file.Paths;
 import java.nio.file.Files;
+import java.nio.file.FileVisitResult;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.io.IOException;
 import org.apache.lucene.queryparser.classic.ParseException;
 
@@ -159,6 +164,33 @@ public class EurekaService {
         }
         catch (IOException ex) {
             throw new BadRequestException("The file could not be opened.");
+        }
+    }
+
+    private List<String> getAvailableFolders() throws IOException {
+        List<String> folders = new ArrayList<String>();
+        final java.nio.file.Path folderPath = Paths.get("/projects");
+        Files.walkFileTree(folderPath, new SimpleFileVisitor<java.nio.file.Path>() {
+            @Override
+            public FileVisitResult preVisitDirectory(java.nio.file.Path path, BasicFileAttributes attrs) throws IOException {
+                String folder = path.toString();
+                folders.add(folder);
+                return folder.equals("/projects") ? FileVisitResult.CONTINUE : FileVisitResult.SKIP_SUBTREE;
+            }
+        });
+        return folders;
+    }
+
+    @GET
+    @Path("/folders")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFolders() {
+        try {
+            List<String> folders = getAvailableFolders();
+            return Response.ok(folders).build();
+        }
+        catch (IOException ex) {
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
 }
