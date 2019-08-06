@@ -86,7 +86,9 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
         const row = ev.target.closest(".item-row");
         addClassExclusively(row, "selected-row", Array.from(this.searchDisplay.querySelectorAll(".item-row")));
         const path = ev.target.innerText;
-        this.props.onFileClick(path);
+        if (path) {
+            this.props.onFileClick(path);
+        }
     }
 
     public displaySourceCode(sourceCode: string, language: string): void {

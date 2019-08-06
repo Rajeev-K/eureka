@@ -284,9 +284,11 @@ button {
 .result-table {
     margin: 0 16px 0 16px;
     width: calc(100% - 32px);
+    border-spacing: 0;
 
     td {
         cursor: default;
+        padding: 2px;
     }
 
     .selected-row {
