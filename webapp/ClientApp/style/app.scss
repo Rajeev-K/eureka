@@ -3,6 +3,8 @@ $logo-color: #0067bb;
 $icon-gray: #777;
 $selected-row-color: #cbe6f9;
 $title-width: 130px;
+$control-border-color: #b3b3b3;
+$outline-color: #aaa;
 
 body {
     margin: 0;
@@ -249,13 +251,10 @@ button {
 
     .folder-input-section {
         margin-bottom: 12px;
-    }
 
-    .folder-input {
-        font-size: 14px;
-        padding: 2px 2px 4px 6px;
-        margin: 3px 0 0 0;
-        width: 500px;
+        .path-help {
+            margin-top: 3px;
+        }
     }
 
     .layout-column {
@@ -331,4 +330,82 @@ button {
 
 .add-folder-panel {
     margin-top: 10px;
+}
+
+.combo-box {
+    font-size: 12px;
+
+    .combo-prompt {
+        margin-top: 7px;
+        margin-bottom: 5px;
+    }
+
+    .combo-rect {
+        box-sizing: border-box;
+        width: 100%;
+        border: 1px solid $control-border-color;
+        display: inline-block;
+        background-color: white;
+
+        input[type=text].combo-textbox { // high specificity, to avoid accidental override
+            width: calc(100% - 30px);
+            box-sizing: border-box;
+            border: none;
+            padding: 4px 0 5px 7px;
+            outline: none;
+
+            &::-ms-clear {
+                display: none;
+            }
+        }
+    }
+
+    &.select-only {
+        input {
+            cursor: default;
+        }
+    }
+
+    .combo-focus-style {
+        border-color: $outline-color;
+    }
+
+    .combo-chevron {
+        display: inline-block;
+        width: 25px;
+        text-align: center;
+        cursor: default;
+        color: #666;
+
+        &:hover {
+            color: #000;
+        }
+    }
+
+    .combo-highlighted {
+        background-color: #d9f5fd;
+    }
+
+    .combo-dropdown {
+        box-sizing: border-box;
+        border: 1px solid $control-border-color;
+        background-color: white;
+        color: #2b2b2b;
+        position: absolute;
+        margin-top: -1px;
+        cursor: default;
+        outline: 0;
+        font-size: 13px;
+        min-width: 175px;
+        max-height: 400px;
+        overflow: auto;
+    }
+
+    .combo-dropdown-item {
+        padding: 5px 5px 6px 5px;
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
 }

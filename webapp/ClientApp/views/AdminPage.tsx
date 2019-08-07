@@ -2,28 +2,26 @@
 
 import { CommonHeader } from "./CommonHeader";
 import { InfoIcon } from "./Icons";
+import { ComboBox } from "./ComboBox";
 
 export interface AdminPageProps extends UIBuilder.Props<AdminPage> {
     onDeleteIndexClick: () => void;
     onAddFolderClick: () => void;
+    folderSuggestions: string[];
 }
 
 export class AdminPage extends UIBuilder.Component<AdminPageProps> {
-    private input: HTMLInputElement;
     private resultDisplay: HTMLElement;
     private progressDisplay: HTMLElement;
     private countDisplay: HTMLElement;
+    private folderCombo: ComboBox;
 
     constructor(props) {
         super(props);
     }
 
-    private onClearClick(): void {
-        this.input.value = '';
-    }
-
     public getFolder(): string {
-        return this.input.value;
+        return this.folderCombo.getValue();
     }
 
     public displayError(error: any): void {
@@ -53,6 +51,10 @@ export class AdminPage extends UIBuilder.Component<AdminPageProps> {
         this.countDisplay.innerText = `There are ${result.count} files in the index.`;
     }
 
+    public setFolderSuggestions(folders: string[]): void {
+        this.folderCombo.setSuggestions(folders);
+    }
+
     public render(): JSX.Element {
         return (
             <div className="admin-page">
@@ -66,9 +68,11 @@ export class AdminPage extends UIBuilder.Component<AdminPageProps> {
                     <div className="add-folder-panel">
                         <h4>Index a folder</h4>
                         <div className="folder-input-section">
-                            <input type="text" className="folder-input" spellcheck={false}
-                                   placeholder="Paste folder path here" ref={el => this.input = el} />
-                            <div><label><InfoIcon />Path is case sensitive and must start with /projects. Use / to separate folders.</label></div>
+                            <ComboBox prompt="Folder path:" placeholder="Type folder path here"
+                                      ref={el => this.folderCombo = el} suggestions={this.props.folderSuggestions} />
+                            <div className="path-help">
+                                <label><InfoIcon />Path is case sensitive and must start with /projects. Use / to separate folders.</label>
+                            </div>
                         </div>
                         <button type="button" className="default-button" onClick={this.props.onAddFolderClick}>Add folder</button>
                     </div>

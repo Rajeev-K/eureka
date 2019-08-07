@@ -48,6 +48,17 @@ export class Mouse {
 }
 
 /**
+ * Checks if supplied element is visible, based on its (and its ancestors') style settings.
+ */
+export function isVisible(el: HTMLElement): boolean {
+    if (!el) {
+        return false;
+    }
+    const style = window.getComputedStyle(el);
+    return style.display !== 'none';
+}
+
+/**
  * Add a class to supplied element, while removing the class from its peers.
  * @param el
  * @param className
@@ -62,4 +73,21 @@ export function addClassExclusively(el: Element, className: string, peers?: Elem
         else
             child.classList.remove(className);
     });
+}
+
+export function concatClasses(...classes: any[]): string {
+    const filtered = classes.filter(c => c && typeof c === "string");
+    return filtered.join(' ');
+}
+
+/**
+ * Returns coordinates relative to document.
+ */
+export function getOffset(el: HTMLElement): { left: number, top: number } {
+    const rect = el.getBoundingClientRect();
+
+    return {
+        left: rect.left + window.pageXOffset,
+        top: rect.top + window.pageYOffset
+    };
 }

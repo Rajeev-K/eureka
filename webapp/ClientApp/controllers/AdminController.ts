@@ -15,7 +15,8 @@ export class AdminController extends MvcRouter.Controller {
 
         const props: AdminPageProps = {
             onDeleteIndexClick: () => this.onDeleteIndexClick(),
-            onAddFolderClick: () => this.onAddFolderClick()
+            onAddFolderClick: () => this.onAddFolderClick(),
+            folderSuggestions: [ "/projects" ]
         };
         props.ref = component => {
             if (component) {
@@ -31,6 +32,9 @@ export class AdminController extends MvcRouter.Controller {
 
     private initPage(): void {
         this.displayIndexStatus();
+        fetch('/eureka-service/api/engine/folders')
+            .then(response => response.json())
+            .then(folders => this.adminPage.setFolderSuggestions(folders));
     }
 
     private onDeleteIndexClick(): void {
