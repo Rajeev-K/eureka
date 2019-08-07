@@ -1,6 +1,7 @@
 // Copyright (c) 2019-present, Rajeev-K.
 
 import { Mouse } from "./ViewUtils";
+import { concatClasses } from "./ViewUtils";
 
 /**
  * Children must be set to boxSizing = borderBox, and should not have margins.
@@ -77,11 +78,9 @@ export class SplitterControl extends UIBuilder.Component<SplitterControlProps> {
     }
 
     public render(): JSX.Element {
-        let className = "splitter-control";
-        if (this.props.className)
-            className += (' ' + this.props.className);
+        const classNames = concatClasses("splitter-control", this.props.className);
         return (
-            <div className={className} ref={el => this.root = el}>
+            <div className={classNames} ref={el => this.root = el}>
                 {this.firstChild}
                 <div className="splitter-divider" ref={el => this.divider = el} onMouseDown={ev => this.onMouseDown(ev)}>
                     <div className="splitter-handle"></div>
