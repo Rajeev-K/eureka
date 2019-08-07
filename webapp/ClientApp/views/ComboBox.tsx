@@ -82,6 +82,7 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
     private showDropDown(): void {
         this.dropDown.style.display = null;
         this.dropDown.style.minWidth = this.outerRect.offsetWidth + 'px';
+        this.dropDown.scrollTop = 0;
     }
 
     private isDropDownVisible() {
@@ -123,6 +124,10 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
     }
 
     private scrollSelectedItemIntoView() {
+        function rehighlightItem(): void {
+            // Needed because highlighted item changes if mouse is over the dropdown
+            window.setTimeout(() => addClassExclusively(item, 'combo-highlighted'), 100);
+        }
         const first = this.dropDown.querySelector('.combo-dropdown-item') as HTMLElement;
         const item = this.dropDown.querySelector('.combo-highlighted') as HTMLElement;
         const itemTop = getOffset(item).top;
@@ -131,9 +136,11 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
         const dropdownBottom = dropdownTop + this.dropDown.offsetHeight;
         if (itemTop < dropdownTop) {
             this.dropDown.scrollTop = itemTop - getOffset(first).top;
+            rehighlightItem();
         }
         else if (itemBottom > dropdownBottom) {
             this.dropDown.scrollTop = itemBottom - getOffset(first).top - this.dropDown.offsetHeight;
+            rehighlightItem();
         }
     }
     
