@@ -66,7 +66,7 @@ public class SearchEngine {
     };
     private String[] skippableFolders = {
         "/.git", "/obj", "/bin", "/.vs",
-        "/debug", "/release",
+        "/debug", "/release", "/target",
         "/node_modules", "/pnpm-store"
     };
 
