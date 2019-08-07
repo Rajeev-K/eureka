@@ -124,8 +124,8 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
     }
 
     private scrollSelectedItemIntoView() {
-        function rehighlightItem(): void {
-            // Needed because highlighted item changes if mouse is over the dropdown
+        function restoreHighlight(): void {
+            // Needed because highlighted item changes on scroll if mouse is over the dropdown
             window.setTimeout(() => addClassExclusively(item, 'combo-highlighted'), 100);
         }
         const first = this.dropDown.querySelector('.combo-dropdown-item') as HTMLElement;
@@ -136,11 +136,11 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
         const dropdownBottom = dropdownTop + this.dropDown.offsetHeight;
         if (itemTop < dropdownTop) {
             this.dropDown.scrollTop = itemTop - getOffset(first).top;
-            rehighlightItem();
+            restoreHighlight();
         }
         else if (itemBottom > dropdownBottom) {
             this.dropDown.scrollTop = itemBottom - getOffset(first).top - this.dropDown.offsetHeight;
-            rehighlightItem();
+            restoreHighlight();
         }
     }
     
