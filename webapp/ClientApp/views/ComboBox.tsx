@@ -192,7 +192,7 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
     }
 
     private onTextBoxKeyUp(ev: KeyboardEvent): void {
-        if (ev.which !== KeyCodes.DownArrow && ev.which !== KeyCodes.UpArrow) {
+        if (ev.which !== KeyCodes.DownArrow && ev.which !== KeyCodes.UpArrow && ev.which !== KeyCodes.Escape) {
             this.value = this.textInput.value;
             this.populateDropDown(this.value);
         }
