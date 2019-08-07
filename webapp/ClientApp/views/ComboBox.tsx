@@ -19,6 +19,7 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
     private filter: string;
     private value: any;
     private suggestions: any[];
+    private whenScrolled = 0;
 
     constructor(props) {
         super(props);
@@ -117,6 +118,10 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
     }
 
     private onDropDownMouseOver(ev: MouseEvent): void {
+        if (this.whenScrolled && (new Date()).getTime() < this.whenScrolled + 250) {
+            // We automatically get a hover event when we scroll, ignore it in order to keep our current highlight.
+            return;
+        }
         const element = ev.target as HTMLElement;
         if (element.classList.contains('combo-dropdown-item')) {
             addClassExclusively(element, 'combo-highlighted');
@@ -124,10 +129,6 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
     }
 
     private scrollSelectedItemIntoView() {
-        function restoreHighlight(): void {
-            // Needed because highlighted item changes on scroll if mouse is over the dropdown
-            window.setTimeout(() => addClassExclusively(item, 'combo-highlighted'), 100);
-        }
         const first = this.dropDown.querySelector('.combo-dropdown-item') as HTMLElement;
         const item = this.dropDown.querySelector('.combo-highlighted') as HTMLElement;
         const itemTop = getOffset(item).top;
@@ -136,11 +137,11 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
         const dropdownBottom = dropdownTop + this.dropDown.offsetHeight;
         if (itemTop < dropdownTop) {
             this.dropDown.scrollTop = itemTop - getOffset(first).top;
-            restoreHighlight();
+            this.whenScrolled = (new Date()).getTime();
         }
         else if (itemBottom > dropdownBottom) {
             this.dropDown.scrollTop = itemBottom - getOffset(first).top - this.dropDown.offsetHeight;
-            restoreHighlight();
+            this.whenScrolled = (new Date()).getTime();
         }
     }
     
