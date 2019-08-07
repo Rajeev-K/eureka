@@ -178,6 +178,7 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
                     delete this.filter;
                     this.populateDropDown('');
                 }
+                ev.preventDefault();
                 break;
             case KeyCodes.Tab:
             case KeyCodes.Enter:
