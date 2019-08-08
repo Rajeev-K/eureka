@@ -50,7 +50,9 @@ public class EurekaService {
         try {
             SearchEngine engine = SearchEngine.getInstance();
             long count = engine.getDocCount();
-            return Response.ok("{\"count\":" + count + "}").build();
+            boolean indexingInProgress = engine.getCurrentlyIndexing() != null;
+            IndexStatus status = new IndexStatus(count, indexingInProgress);
+            return Response.ok(status).build();
         }
         catch (IOException ex) {
             throw new InternalServerErrorException(ex.getMessage());
@@ -149,10 +151,10 @@ public class EurekaService {
         }
         final java.nio.file.Path folderPath = Paths.get(path);
         if (!Files.isDirectory(folderPath)) {
-            throw new BadRequestException("Supplied string does not point to a folder.");
+            throw new BadRequestException("Supplied path does not point to a folder.");
         }
         startIndexingThread(path);
-        return Response.ok("{\"message\": \"Indexing is in progress.\"}").build();
+        return Response.ok("{\"indexingStarted\": true}").build();
     }
 
     @GET

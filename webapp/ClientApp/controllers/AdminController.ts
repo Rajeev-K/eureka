@@ -53,10 +53,17 @@ export class AdminController extends MvcRouter.Controller {
     private displayIndexStatus(): void {
         fetch('/eureka-service/api/engine/status')
             .then(response => response.json())
-            .then(result => this.adminPage.displayCount(`There are ${result.count} files in the index.`));
+            .then(result => {
+                if (result.indexingInProgress)
+                    this.displayIndexingProgress();
+                else
+                    this.adminPage.displayCount(`There are ${result.fileCount} files in the index.`);
+            });
     }
 
     private displayIndexingProgress(): void {
+        this.adminPage.displayCount('(pending)');
+        this.adminPage.displayResult('Indexing is in progress.');
         if (window['EventSource']) {
             const es = new EventSource('/eureka-service/api/engine/progress');
             es.addEventListener('message', ev => {
@@ -83,13 +90,10 @@ export class AdminController extends MvcRouter.Controller {
         fetch(`/eureka-service/api/engine/index?path=${encodeURIComponent(folder)}`, options)
             .then(response => response.json())
             .then(result => {
-                if (result.error) {
+                if (result.error)
                     this.adminPage.displayError(result);
-                }
-                else {
-                    this.adminPage.displayResult(result);
+                else
                     this.displayIndexingProgress();
-                }
             })
             .catch(error => this.adminPage.displayError(error));
     }
