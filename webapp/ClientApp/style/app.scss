@@ -148,6 +148,7 @@ button {
 
         button {
             margin-left: 10px;
+            align-self: flex-start;
         }
     }
 
@@ -158,16 +159,15 @@ button {
         }
     }
 
-    .searchbox {
-        border: solid 1px #aaa;
+    .input-panel {
         display: inline-block;
         flex: 1;
 
-        span {
-            overflow: hidden;   // this makes text input width 100% work
+        .searchbox {
+            border: solid 1px #aaa;
         }
 
-        input {
+        .query-input {
             width: calc(100% - 42px);
             border: none;
             font-size: 16px;
@@ -316,16 +316,42 @@ button {
 
 .filter-control {
     margin-top: 5px;
-    margin-left: $title-width;
-}
 
-.ext-checkbox {
-    display: inline-block;
-    margin-right: 5px;
-}
+    .ext-checkbox {
+        display: inline-block;
+        margin-right: 5px;
+    }
 
-.ext-checkbox input {
-    vertical-align: bottom;
+    .ext-checkbox input {
+        vertical-align: bottom;
+    }
+
+    .textinput-row {
+        display: flex;
+        flex-direction: row;
+        margin-top: 2px;
+
+        .filter-input {
+            flex: 0.5;
+
+            .filter-label {
+                font-size: 13px;
+                margin-bottom: 2px;
+            }
+
+            input {
+                width: 100%;
+                font-size: 13px;
+                border: solid 1px $control-border-color;
+                padding: 2px 2px 3px 6px;
+                box-sizing: border-box;
+            }
+
+            &:first-child {
+                padding-right: 7px;
+            }
+        }
+    }
 }
 
 .add-folder-panel {

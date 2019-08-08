@@ -156,14 +156,15 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
             <div className="search-page" ref={el => this.root = el}>
                 <div className="top-bar">
                     <CommonHeader />
-                    <div className="searchbox">
-                        <span>
+                    <div className="input-panel">
+                        <div className="searchbox">
                             <input type="text" className="query-input" spellcheck={false} onKeyPress={ev => this.onKeyPress(ev)}
                                    placeholder="Type search terms here" ref={el => this.input = el} />
-                        </span>
-                        <button type="button" className="clear-button" onClick={() => this.onClearClick()}>
-                            <i class="fas fa-times"></i>
-                        </button>
+                            <button type="button" className="clear-button" onClick={() => this.onClearClick()}>
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div className="result-filter" ref={el => this.filterDisplay = el}></div>
                     </div>
                     <button type="button" className="default-button" onClick={this.props.onSearchClick}>Search</button>
                     <button type="button" className="manage-button" onClick={this.props.onManageClick}>
@@ -171,7 +172,6 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
                         Manage
                     </button>
                 </div>
-                <div className="result-filter" ref={el => this.filterDisplay = el}></div>
                 <div className="error-message" ref={el => this.errorDisplay = el}></div>
                 <SplitterControl className="result-splitter" ref={splitter => this.splitterControl = splitter}
                     onSplitterMoved={() => this.onSplitterMoved()}

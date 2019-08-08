@@ -23,7 +23,7 @@ export class FilterControl extends UIBuilder.Component<FilterControlProps> {
 
     public render(): JSX.Element {
         let i = 0;
-        const controls = this.props.extensions.map(ext => {
+        const checkboxes = this.props.extensions.map(ext => {
             const id = `filter-ext-${++i}`;
             return (
                 <div className="ext-checkbox">
@@ -34,7 +34,17 @@ export class FilterControl extends UIBuilder.Component<FilterControlProps> {
         });
         return (
             <div className="filter-control" onChange={ev => this.onChange(ev)} ref={el => this.root = el}>
-                {controls}
+                <div className="textinput-row">
+                    <div className="filter-input">
+                        <div className="filter-label">Only show paths that contain:</div>
+                        <div><input type="text" placeholder="Type part of path here" /></div>
+                    </div>
+                    <div className="filter-input">
+                        <div className="filter-label">Exclude paths that contain: </div>
+                        <div><input type="text" placeholder="Comma-separated list" /></div>
+                    </div>
+                </div>
+                <div className="checkbox-row">{checkboxes}</div>
             </div>
         );
     }
