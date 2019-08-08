@@ -1,5 +1,8 @@
 FROM eureka-base
 
+# Install favicon
+COPY webapp/wwwroot/favicon.ico /usr/local/share/tomcat/webapps/ROOT/favicon.ico
+
 # Replace server.xml in order to enable url rewrite
 COPY conf/server.xml ${TOMCAT_HOME}/conf/server.xml
 
