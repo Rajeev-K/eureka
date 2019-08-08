@@ -47,8 +47,8 @@ export class AdminPage extends UIBuilder.Component<AdminPageProps> {
         this.progressDisplay.innerText = (typeof progress === 'string') ? progress : JSON.stringify(progress);
     }
 
-    public displayCount(result: any): void {
-        this.countDisplay.innerText = `There are ${result.count} files in the index.`;
+    public displayCount(text: string): void {
+        this.countDisplay.innerText = text;
     }
 
     public setFolderSuggestions(folders: string[]): void {

@@ -118,7 +118,7 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
     }
 
     private onDropDownMouseOver(ev: MouseEvent): void {
-        if (this.whenScrolled && (new Date()).getTime() < this.whenScrolled + 250) {
+        if ((new Date()).getTime() < this.whenScrolled + 250) {
             // We automatically get a hover event when we scroll, ignore it in order to keep our current highlight.
             return;
         }

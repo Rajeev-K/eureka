@@ -53,7 +53,7 @@ export class AdminController extends MvcRouter.Controller {
     private displayIndexStatus(): void {
         fetch('/eureka-service/api/engine/status')
             .then(response => response.json())
-            .then(result => this.adminPage.displayCount(result));
+            .then(result => this.adminPage.displayCount(`There are ${result.count} files in the index.`));
     }
 
     private displayIndexingProgress(): void {
