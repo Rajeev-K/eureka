@@ -46,7 +46,7 @@ export class SearchController extends MvcRouter.Controller {
     }
 
     private getLanguageFromPath(path: string): string {
-        return Utils.getLanguageFromExtension(Utils.getFilenameExtension(path, true));
+        return Utils.getLanguageFromPath(path);
     }
 
     private onFileClick(path: string): void {

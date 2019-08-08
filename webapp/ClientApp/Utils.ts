@@ -41,9 +41,9 @@ const extensionMap = {
     ".json":    "json",
     ".cmd":     "bat",
     ".c":       "c",
-    ".h":       "h",
+    ".h":       "c",
     ".cpp":     "cpp",
-    ".hpp":     "h",
+    ".hpp":     "cpp",
     ".cs":      "csharp",
     ".css":     "css",
     ".go":      "go",
@@ -78,11 +78,13 @@ const extensionMap = {
     ".pl":      "perl"
 };
 
-export function getLanguageFromExtension(extension: string): string {
-    if (!extension)
+export function getLanguageFromPath(path: string): string {
+    if (!path)
         return "plaintext";
-    else if (extensionMap.hasOwnProperty(extension))
-        return extensionMap[extension];
-    else
-        return "plaintext";
+    const extensions = Object.keys(extensionMap);
+    for (const extension of extensions) {
+        if (path.endsWith(extension))
+            return extensionMap[extension];
+    }
+    return "plaintext";
 }
