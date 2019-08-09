@@ -125,7 +125,7 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
     private getRendering(result: SearchResultItem[], noRowsMessage: string): JSX.Element {
         if (!result || !result.length)
             return <div className="no-rows-message">{noRowsMessage}</div>;
-        const rows = result.map(item => <tr className="item-row"><td title="Click to copy to clipboard">{item.path}</td></tr>);
+        const rows = result.map(item => <tr className="item-row"><td>{item.path}</td></tr>);
         return (
             <table className="result-table" onClick={ev => this.onResultTableClick(ev)}>
                 <tbody>
