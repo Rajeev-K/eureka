@@ -56,7 +56,7 @@ export class FilterControl extends UIBuilder.Component<FilterControlProps> {
         }
         if (this.timeoutId)
             window.clearTimeout(this.timeoutId);
-        this.timeoutId = window.setTimeout(() => this.fireFilterChangedEvent(), 1000);
+        this.timeoutId = window.setTimeout(() => this.fireFilterChangedEvent(), 500);
     }
 
     public render(): JSX.Element {
@@ -76,11 +76,13 @@ export class FilterControl extends UIBuilder.Component<FilterControlProps> {
                 <div className="textinput-row">
                     <div className="filter-input">
                         <div className="filter-label">Only show paths that contain:</div>
-                        <div><input type="text" placeholder="Type part of path here" ref={el => this.includeInput = el} /></div>
+                        <div><input type="text" spellcheck={false}
+                                    placeholder="Type part of path here" ref={el => this.includeInput = el} /></div>
                     </div>
                     <div className="filter-input">
                         <div className="filter-label">Exclude paths that contain: </div>
-                        <div><input type="text" placeholder="Comma-separated list" ref={el => this.excludeInput = el} /></div>
+                        <div><input type="text" spellcheck={false}
+                                    placeholder="Comma-separated list" ref={el => this.excludeInput = el} /></div>
                     </div>
                 </div>
                 <div className="checkbox-row">{checkboxes}</div>
