@@ -1,24 +1,62 @@
 // Copyright (c) 2019-present, Rajeev-K.
 
+export interface Filter {
+    extensions?: string[];
+    include?: string;
+    exclude?: string[];
+}
+
 export interface FilterControlProps {
     extensions?: string[];
-    onFilterChanged?: (extensions: string[]) => void;
+    onFilterChanged?: (filter: Filter) => void;
 }
 
 export class FilterControl extends UIBuilder.Component<FilterControlProps> {
     private root: HTMLElement;
+    private includeInput: HTMLInputElement;
+    private excludeInput: HTMLInputElement;
+    private timeoutId: number;
 
     constructor(props: FilterControlProps) {
         super(props);
     }
 
-    private onChange(ev): void {
+    private fireFilterChangedEvent(): void {
+        if (!this.props.onFilterChanged)
+            return;
+
         const checkBoxes = Array.from(this.root.querySelectorAll("input"));
         let selectedExtensions = checkBoxes.filter(cb => cb.checked).map(cb => cb.dataset.ext);
         if (selectedExtensions.length === 0)
             selectedExtensions = null;
-        if (this.props.onFilterChanged)
-            this.props.onFilterChanged(selectedExtensions);
+
+        let filter: Filter = {
+            extensions: selectedExtensions,
+            include: this.includeInput.value.trim(),
+            exclude: this.excludeInput.value.split(',').map(s => s.trim()).filter(s => s)
+        };
+        if (!filter.extensions && !filter.include && filter.exclude.length === 0)
+            filter = null;
+
+        this.props.onFilterChanged(filter);
+    }
+
+    private onChange(ev: Event): void {
+        if ((ev.target as HTMLInputElement).type === "text") {
+            // We'll let onInput handle this.
+            return;
+        }
+        this.fireFilterChangedEvent();
+    }
+
+    private onInput(ev: Event): void {
+        if ((ev.target as HTMLInputElement).type === "checkbox") {
+            // We'll let onChange handle this.
+            return;
+        }
+        if (this.timeoutId)
+            window.clearTimeout(this.timeoutId);
+        this.timeoutId = window.setTimeout(() => this.fireFilterChangedEvent(), 1000);
     }
 
     public render(): JSX.Element {
@@ -33,15 +71,16 @@ export class FilterControl extends UIBuilder.Component<FilterControlProps> {
             );
         });
         return (
-            <div className="filter-control" onChange={ev => this.onChange(ev)} ref={el => this.root = el}>
+            <div className="filter-control" onChange={(ev) => this.onChange(ev)}
+                                onInput={ev => this.onInput(ev)} ref={el => this.root = el}>
                 <div className="textinput-row">
                     <div className="filter-input">
                         <div className="filter-label">Only show paths that contain:</div>
-                        <div><input type="text" placeholder="Type part of path here" /></div>
+                        <div><input type="text" placeholder="Type part of path here" ref={el => this.includeInput = el} /></div>
                     </div>
                     <div className="filter-input">
                         <div className="filter-label">Exclude paths that contain: </div>
-                        <div><input type="text" placeholder="Comma-separated list" /></div>
+                        <div><input type="text" placeholder="Comma-separated list" ref={el => this.excludeInput = el} /></div>
                     </div>
                 </div>
                 <div className="checkbox-row">{checkboxes}</div>

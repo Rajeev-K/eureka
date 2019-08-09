@@ -2,7 +2,7 @@
 
 import { CommonHeader } from "./CommonHeader";
 import { SearchResultItem } from "../models/Models";
-import { FilterControl } from "./FilterControl";
+import { FilterControl, Filter } from "./FilterControl";
 import { SplitterControl } from "./SplitterControl";
 import { addClassExclusively } from "./ViewUtils";
 import * as Utils from "../Utils";
@@ -57,15 +57,33 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
         this.renderFilter(result);
     }
 
-    private filterResults(result: SearchResultItem[], extensionFilter: string[]): SearchResultItem[] {
+    private filterResults(result: SearchResultItem[], filter: Filter): SearchResultItem[] {
         const extensions: { [key: string]: any } = {};
-        extensionFilter.forEach(ext => extensions[ext] = true);
-        return result.filter(result => extensions[Utils.getFilenameExtension(result.path)]);
+        if (filter.extensions)
+            filter.extensions.forEach(ext => extensions[ext] = true);
+        return result.filter(result => {
+            const path = result.path.toLowerCase();
+            if (filter.extensions) {
+                if (!extensions[Utils.getFilenameExtension(path)])
+                    return false;
+            }
+            if (filter.include) {
+                if (path.indexOf(filter.include) === -1)
+                    return false;
+            }
+            if (filter.exclude && filter.exclude.length) {
+                for (const ex of filter.exclude) {
+                    if (path.indexOf(ex) !== -1)
+                        return false;
+                }
+            }
+            return true;
+        });
     }
 
-    private renderResult(result: SearchResultItem[], extensionFilter: string[]): void {
-        const noRowsMessage = extensionFilter ? "No matching results" : "No results returned.";
-        const filteredResults = extensionFilter ? this.filterResults(result, extensionFilter) : result;
+    private renderResult(result: SearchResultItem[], filter: Filter): void {
+        const noRowsMessage = filter ? "No matching results" : "No results returned.";
+        const filteredResults = filter ? this.filterResults(result, filter) : result;
         const resultDisplay = this.getRendering(filteredResults, noRowsMessage);
         this.searchDisplay.innerHTML = '';
         this.searchDisplay.appendChild(resultDisplay);
@@ -134,15 +152,14 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
         return Object.keys(map).sort();
     }
 
-    private onFilterChanged(result: SearchResultItem[], extensions: string[]): void {
-        this.renderResult(result, extensions);
+    private onFilterChanged(result: SearchResultItem[], filter: Filter): void {
+        this.renderResult(result, filter);
     }
 
     private renderFilter(result: SearchResultItem[]): void {
         const extensions = SearchPage.getFilenameExtensions(result);
-        const display = extensions.join(' ');
         this.filterDisplay.innerHTML = '';
-        const el = <FilterControl extensions={extensions} onFilterChanged={ext => this.onFilterChanged(result, ext)} />;
+        const el = <FilterControl extensions={extensions} onFilterChanged={filter => this.onFilterChanged(result, filter)} />;
         this.filterDisplay.appendChild(el);
     }
 
