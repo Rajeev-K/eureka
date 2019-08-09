@@ -8,6 +8,8 @@
 // POST   http://localhost:8888/eureka-service/api/engine/index?path=/projects/foo
 // DELETE http://localhost:8888/eureka-service/api/engine/index
 // GET    http://localhost:8888/eureka-service/api/engine/folders
+// GET    http://localhost:8888/eureka-service/api/engine/skippablefolders
+// GET    http://localhost:8888/eureka-service/api/engine/indexableextensions
 
 package eureka;
 
@@ -19,6 +21,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -190,6 +193,66 @@ public class EurekaService {
         try {
             List<String> folders = getAvailableFolders();
             return Response.ok(folders).build();
+        }
+        catch (IOException ex) {
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+
+    @GET
+    @Path("/indexableextensions")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getIndexableExtensions() {
+        try {
+            SearchEngine engine = SearchEngine.getInstance();
+            String[] extensions = engine.getIndexableExtensions();
+            return Response.ok(extensions).build();
+        }
+        catch (IOException ex) {
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+
+    @POST
+    @Path("/indexableextensions")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response setIndexableExtensions(String[] extensions) {
+        try {
+            System.out.println(extensions.toString());
+            SearchEngine engine = SearchEngine.getInstance();
+            engine.setIndexableExtensions(extensions);
+            return Response.ok("{\"success\": true}").build();
+        }
+        catch (IOException ex) {
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+
+    @GET
+    @Path("/skippablefolders")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSkippableFolders() {
+        try {
+            SearchEngine engine = SearchEngine.getInstance();
+            String[] skippableFolders = engine.getSkippableFolders();
+            return Response.ok(skippableFolders).build();
+        }
+        catch (IOException ex) {
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+
+    @POST
+    @Path("/skippablefolders")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response setSkippableFolders(String[] skippableFolders) {
+        try {
+            System.out.println(skippableFolders.toString());
+            SearchEngine engine = SearchEngine.getInstance();
+            engine.setSkippableFolders(skippableFolders);
+            return Response.ok("{\"success\": true}").build();
         }
         catch (IOException ex) {
             throw new InternalServerErrorException(ex.getMessage());

@@ -57,10 +57,10 @@ public class SearchEngine {
     private String[] indexableExtensions = {
         ".ts", ".tsx", ".js",
         ".cs", ".java", ".scala", ".cpp", ".h", ".hh", ".c", ".cc", ".cxx", ".hpp", ".hxx",
-        ".go", ".lua", ".py", ".rb" /* ruby */, ".rs" /* rust */, ".swift", ".sh",
-        ".md", ".txt", ".html", ".xhtml", ".csptml",
+        ".go", ".lua", ".py", ".rb" /* ruby */, ".rs" /* rust */, ".swift",
+        ".md", ".txt", ".html", ".xhtml", ".cshtml",
         ".asp", ".aspx", ".jsp", ".sql", ".m" /* objective-c */, ".php", ".ps1",
-        ".sln", ".csproj", ".json", ".yml", ".xml",
+        ".json", ".yml", ".xml",
         ".css", ".scss", ".less",
         ".cmd", ".sh"
     };
@@ -99,7 +99,7 @@ public class SearchEngine {
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
         config.setOpenMode(OpenMode.CREATE_OR_APPEND);
         indexWriter = new IndexWriter(directory, config);
-        searcherManager = new SearcherManager(indexWriter, true, true, null);        
+        searcherManager = new SearcherManager(indexWriter, true, true, null);
     }
 
     private void takeOffline() throws IOException {
@@ -111,6 +111,22 @@ public class SearchEngine {
             indexWriter.close();
             indexWriter = null;
         }
+    }
+
+    public String[] getIndexableExtensions() {
+        return indexableExtensions;
+    }
+
+    public void setIndexableExtensions(String[] indexableExtensions) {
+        this.indexableExtensions = indexableExtensions;
+    }
+
+    public String[] getSkippableFolders() {
+        return skippableFolders;
+    }
+
+    public void setSkippableFolders(String[] skippableFolders) {
+        this.skippableFolders = skippableFolders;
     }
 
     /**

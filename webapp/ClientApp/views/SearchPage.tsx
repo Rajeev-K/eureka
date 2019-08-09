@@ -82,7 +82,7 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
     }
 
     private renderResult(result: SearchResultItem[], filter: Filter): void {
-        const noRowsMessage = filter ? "No matching results" : "No results returned.";
+        const noRowsMessage = filter ? "No matching results." : "No results returned.";
         const filteredResults = filter ? this.filterResults(result, filter) : result;
         const resultDisplay = this.getRendering(filteredResults, noRowsMessage);
         this.searchDisplay.innerHTML = '';
