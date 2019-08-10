@@ -36,8 +36,10 @@ export class SearchController extends MvcRouter.Controller {
         fetch('/eureka-service/api/engine/status')
             .then(response => response.json())
             .then(result => {
-                if (result.count === 0)
-                    this.searchPage.displayWelcomeScreen();
+                if (this.isLoaded()) {
+                    if (result.count === 0)
+                        this.searchPage.displayWelcomeScreen();
+                }
             });
     }
 
@@ -53,19 +55,23 @@ export class SearchController extends MvcRouter.Controller {
         fetch(`/eureka-service/api/engine/file?path=${encodeURIComponent(path)}`)
             .then(response => {
                 if (response.status === 200) {
-                    this.searchPage.displayError('');
+                    if (this.isLoaded())
+                        this.searchPage.displayError('');
                     return response.text();
                 }
                 else {
-                    this.searchPage.displayError("The file could not be opened.");
+                    if (this.isLoaded())
+                        this.searchPage.displayError("The file could not be opened.");
                     return '';
                 }
             })
             .then(text => {
-                const language = this.getLanguageFromPath(path);
-                this.searchPage.displaySourceCode(text, language);
+                if (this.isLoaded()) {
+                    const language = this.getLanguageFromPath(path);
+                    this.searchPage.displaySourceCode(text, language);
+                }
             })
-            .catch(error => this.searchPage.displayError(error));
+            .catch(error => this.isLoaded() && this.searchPage.displayError(error));
     }
 
     private onSearchClick(): void {
@@ -76,8 +82,8 @@ export class SearchController extends MvcRouter.Controller {
         }
         fetch(`/eureka-service/api/engine/search?query=${encodeURIComponent(query)}`)
             .then(response => response.json())
-            .then(result => this.searchPage.displayResult(result))
-            .catch(error => this.searchPage.displayError(error));
+            .then(result => this.isLoaded() && this.searchPage.displayResult(result))
+            .catch(error => this.isLoaded() && this.searchPage.displayError(error));
     }
 
     public onWindowResize(): void {
