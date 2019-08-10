@@ -14,6 +14,8 @@ export class AdminPage extends UIBuilder.Component<AdminPageProps> {
     private resultDisplay: HTMLElement;
     private progressDisplay: HTMLElement;
     private countDisplay: HTMLElement;
+    private indexableExtensionsDisplay: HTMLElement;
+    private skippableFoldersDisplay: HTMLElement;
     private folderCombo: ComboBox;
 
     constructor(props) {
@@ -55,6 +57,20 @@ export class AdminPage extends UIBuilder.Component<AdminPageProps> {
         this.folderCombo.setSuggestions(folders);
     }
 
+    public setSkippableFolders(folders: string[]): void {
+        this.skippableFoldersDisplay.innerText = folders.join(", ");
+    }
+
+    public setIndexableExtensions(extensions: string[]): void {
+        this.indexableExtensionsDisplay.innerText = extensions.join(", ");
+    }
+
+    public onEditIndexableExtensions(): void {
+    }
+
+    public onEditSkippableFolders(): void {
+    }
+
     public render(): JSX.Element {
         return (
             <div className="admin-page">
@@ -85,6 +101,15 @@ export class AdminPage extends UIBuilder.Component<AdminPageProps> {
                     <div className="index-status">
                         <h4>Index Status</h4>
                         <div className="index-count" ref={el => this.countDisplay = el}></div>
+                    </div>
+                    <div className="settings">
+                        <h4>Settings</h4>
+                        <h5>Files with the following extensions will be indexed:</h5>
+                        <div className="indexable-extensions" ref={el => this.indexableExtensionsDisplay = el}></div>
+                        <button onClick={() => this.onEditIndexableExtensions()}>Modify...</button>
+                        <h5>The following folders will be skipped:</h5>
+                        <div className="skippable-folders" ref={el => this.skippableFoldersDisplay = el}></div>
+                        <button onClick={() => this.onEditSkippableFolders()}>Modify...</button>
                     </div>
                 </div>
             </div>

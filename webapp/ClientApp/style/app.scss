@@ -261,10 +261,24 @@ button {
         display: inline-block;
         vertical-align: top;
         padding-right: 50px;
+        width: 470px;
     }
 
     .index-status {
         margin-top: 15px;
+    }
+
+    .settings {
+        margin-top: 30px;
+
+        h5 {
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            margin-top: 10px;
+        }
     }
 }
 

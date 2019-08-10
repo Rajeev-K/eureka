@@ -35,6 +35,12 @@ export class AdminController extends MvcRouter.Controller {
         fetch('/eureka-service/api/engine/folders')
             .then(response => response.json())
             .then(folders => this.adminPage.setFolderSuggestions(folders));
+        fetch('/eureka-service/api/engine/skippablefolders')
+            .then(response => response.json())
+            .then(folders => this.adminPage.setSkippableFolders(folders));
+        fetch('/eureka-service/api/engine/indexableextensions')
+            .then(response => response.json())
+            .then(extensions => this.adminPage.setIndexableExtensions(extensions));
     }
 
     private onDeleteIndexClick(): void {
