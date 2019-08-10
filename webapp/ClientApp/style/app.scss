@@ -1,13 +1,23 @@
+// Colors
 $brand-color: #0082df;
 $logo-color: #0067bb;
 $icon-gray: #777;
 $selected-row-color: #cbe6f9;
-$title-width: 130px;
 $control-border-color: #b3b3b3;
 $outline-color: #aaa;
 
+// Z indexes
+$z-dialog-mask: 999;
+
+// Sizes
+$title-width: 130px;
+
 body {
     margin: 0;
+
+    &.no-scroll {
+        overflow: hidden;
+    }
 }
 
 body, input, button {
@@ -320,7 +330,7 @@ button {
 }
 
 .delete-index-panel {
-    margin-top: 40px;
+    margin-top: 130px;
     margin-bottom: 75px;
 }
 
@@ -447,6 +457,46 @@ button {
 
         &:last-child {
             border-bottom: none;
+        }
+    }
+}
+
+.dialog-mask {
+    z-index: $z-dialog-mask;
+    background-color: rgba(0, 0, 0, 0.3);
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.dialog {
+    position: absolute;
+    background-color: white;
+    min-width: 270px;
+    max-width: calc(100vw - 10px);
+    box-sizing: border-box;
+    word-wrap: break-word;
+    border: 1px solid #999;
+    padding: 20px;
+
+    .dialog-row {
+        margin-bottom: 7px;
+
+        label {
+            display: block;
+            padding-bottom: 3px;
+        }
+    }
+
+    .dialog-button-panel {
+        margin-top: 15px;
+        text-align: right;
+
+        button {
+            margin-left: 10px;
+            min-width: 80px;
         }
     }
 }

@@ -91,3 +91,12 @@ export function getOffset(el: HTMLElement): { left: number, top: number } {
         top: rect.top + window.pageYOffset
     };
 }
+
+/**
+ * Returns focusable children of supplied element.
+ */
+export function focusableChildren(el: HTMLElement): HTMLElement[] {
+    const query = ['a', 'area', 'button', 'input', 'select', 'textarea'].map(el => el + ':not([disabled])');
+    query.push('[tabindex]:not([disabled]):not([tabindex=""])');
+    return Array.from(el.querySelectorAll(query.join(', ')));
+}

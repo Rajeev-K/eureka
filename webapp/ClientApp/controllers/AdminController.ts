@@ -2,6 +2,7 @@
 
 import { App } from "../App";
 import { AdminPage, AdminPageProps } from "../views/AdminPage";
+import { ExtensionsDialog } from "../views/ExtensionsDialog";
 
 export class AdminController extends MvcRouter.Controller {
     private adminPage: AdminPage;
@@ -16,6 +17,8 @@ export class AdminController extends MvcRouter.Controller {
         const props: AdminPageProps = {
             onDeleteIndexClick: () => this.onDeleteIndexClick(),
             onAddFolderClick: () => this.onAddFolderClick(),
+            onEditIndexableExtensions: () => this.onEditIndexableExtensions(),
+            onEditSkippableFolders: () => this.onEditSkippableFolders(),
             folderSuggestions: [ "/projects" ]
         };
         props.ref = component => {
@@ -102,5 +105,15 @@ export class AdminController extends MvcRouter.Controller {
                     this.displayIndexingProgress();
             })
             .catch(error => this.adminPage.displayError(error));
+    }
+
+    private onEditIndexableExtensions(): void {
+        const dialog = new ExtensionsDialog();
+        dialog.showDialog()
+            .then(result => console.log("done"))
+            .catch(error => console.log("cancelled"));
+    }
+
+    private onEditSkippableFolders(): void {
     }
 }

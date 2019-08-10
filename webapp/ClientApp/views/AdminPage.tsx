@@ -8,6 +8,8 @@ export interface AdminPageProps extends UIBuilder.Props<AdminPage> {
     onDeleteIndexClick: () => void;
     onAddFolderClick: () => void;
     folderSuggestions: string[];
+    onEditIndexableExtensions: () => void;
+    onEditSkippableFolders: () => void;
 }
 
 export class AdminPage extends UIBuilder.Component<AdminPageProps> {
@@ -65,12 +67,6 @@ export class AdminPage extends UIBuilder.Component<AdminPageProps> {
         this.indexableExtensionsDisplay.innerText = extensions.join(", ");
     }
 
-    public onEditIndexableExtensions(): void {
-    }
-
-    public onEditSkippableFolders(): void {
-    }
-
     public render(): JSX.Element {
         return (
             <div className="admin-page">
@@ -106,10 +102,10 @@ export class AdminPage extends UIBuilder.Component<AdminPageProps> {
                         <h4>Settings</h4>
                         <h5>Files with the following extensions will be indexed:</h5>
                         <div className="indexable-extensions" ref={el => this.indexableExtensionsDisplay = el}></div>
-                        <button onClick={() => this.onEditIndexableExtensions()}>Modify...</button>
+                        <button onClick={() => this.props.onEditIndexableExtensions()}>Edit...</button>
                         <h5>The following folders will be skipped:</h5>
                         <div className="skippable-folders" ref={el => this.skippableFoldersDisplay = el}></div>
-                        <button onClick={() => this.onEditSkippableFolders()}>Modify...</button>
+                        <button onClick={() => this.props.onEditSkippableFolders()}>Edit...</button>
                     </div>
                 </div>
             </div>
