@@ -10,7 +10,7 @@ export class ExtensionsDialog extends DialogBase {
             <div className="extensions-dialog">
                 <div className="dialog-row">
                 </div>
-                {this.renderDefaultButtonPanel()}
+                {this.renderButtonPanel()}
             </div>
         );
         super.render();

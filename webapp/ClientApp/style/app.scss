@@ -474,7 +474,7 @@ button {
 .dialog {
     position: absolute;
     background-color: white;
-    min-width: 270px;
+    min-width: 300px;
     max-width: calc(100vw - 10px);
     box-sizing: border-box;
     word-wrap: break-word;
@@ -499,4 +499,8 @@ button {
             min-width: 80px;
         }
     }
+}
+
+.message-box-message {
+    margin-bottom: 20px;
 }

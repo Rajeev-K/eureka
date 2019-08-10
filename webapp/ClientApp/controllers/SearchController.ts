@@ -2,6 +2,7 @@
 
 import { App } from "../App";
 import { SearchPage, SearchPageProps } from "../views/SearchPage";
+import { MessageBox } from "../views/MessageBox";
 import * as Utils from "../Utils";
 
 export class SearchController extends MvcRouter.Controller {
@@ -77,7 +78,7 @@ export class SearchController extends MvcRouter.Controller {
     private onSearchClick(): void {
         const query = this.searchPage.getQuery();
         if (!query) {
-            alert("Enter search terms then press Search");
+            MessageBox.show("Enter search terms then press Search.");
             return;
         }
         fetch(`/eureka-service/api/engine/search?query=${encodeURIComponent(query)}`)

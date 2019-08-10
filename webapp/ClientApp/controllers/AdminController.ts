@@ -2,6 +2,7 @@
 
 import { App } from "../App";
 import { AdminPage, AdminPageProps } from "../views/AdminPage";
+import { MessageBox } from "../views/MessageBox";
 import { ExtensionsDialog } from "../views/ExtensionsDialog";
 
 export class AdminController extends MvcRouter.Controller {
@@ -50,13 +51,19 @@ export class AdminController extends MvcRouter.Controller {
         const options = {
             method: 'DELETE'
         };
-        fetch('/eureka-service/api/engine/index', options)
+        MessageBox.confirm("Confirm: Delete search index?")
+            .then(() => fetch('/eureka-service/api/engine/index', options))
             .then(response => response.json())
             .then(result => {
                 this.adminPage.displayResult(result);
                 this.displayIndexStatus();
             })
-            .catch(error => this.isLoaded() && this.adminPage.displayError(error));
+            .catch(error => {
+                if (this.isLoaded()) {
+                    if (!error.dialogCancelled)
+                        this.adminPage.displayError(error);
+                }
+            });
     }
 
     private displayIndexStatus(): void {
@@ -94,7 +101,7 @@ export class AdminController extends MvcRouter.Controller {
     private onAddFolderClick(): void {
         const folder = this.adminPage.getFolder();
         if (!folder) {
-            alert('Specify a folder to index');
+            MessageBox.show('Specify a folder to index.');
             return;
         }
         const options = {

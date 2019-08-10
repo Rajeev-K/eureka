@@ -147,7 +147,7 @@ export class DialogBase {
         this.resolve({});
     }
 
-    protected renderDefaultButtonPanel(labels?: {okButtonLabel?: string, cancelButtonLabel?: string}): JSX.Element {
+    protected renderButtonPanel(labels?: {okButtonLabel?: string, cancelButtonLabel?: string}): JSX.Element {
         if (!labels)
             labels = {};
         if (!labels.okButtonLabel)
