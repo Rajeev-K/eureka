@@ -7,6 +7,7 @@ import { ExtensionsDialog } from "../views/ExtensionsDialog";
 
 export class AdminController extends MvcRouter.Controller {
     private adminPage: AdminPage;
+    private extensions: string[];
 
     constructor(protected app: App) {
         super();
@@ -44,7 +45,12 @@ export class AdminController extends MvcRouter.Controller {
             .then(folders => this.isLoaded() && this.adminPage.setSkippableFolders(folders));
         fetch('/eureka-service/api/engine/indexableextensions')
             .then(response => response.json())
-            .then(extensions => this.isLoaded() && this.adminPage.setIndexableExtensions(extensions));
+            .then(extensions => {
+                if (this.isLoaded()) {
+                    this.extensions = extensions;
+                    this.adminPage.setIndexableExtensions(extensions);
+                }
+            });
     }
 
     private onDeleteIndexClick(): void {
@@ -122,9 +128,12 @@ export class AdminController extends MvcRouter.Controller {
 
     private onEditIndexableExtensions(): void {
         const dialog = new ExtensionsDialog();
+        dialog.extensions = this.extensions;
         dialog.showDialog()
-            .then(result => console.log("done"))
-            .catch(error => console.log("cancelled"));
+            .then(() => {
+                this.extensions = dialog.extensions;
+                this.adminPage.setIndexableExtensions(this.extensions);
+            });
     }
 
     private onEditSkippableFolders(): void {

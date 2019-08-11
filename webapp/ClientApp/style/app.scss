@@ -504,3 +504,18 @@ button {
 .message-box-message {
     margin-bottom: 20px;
 }
+
+.extensions-dialog {
+    textarea {
+        box-sizing: border-box;
+        width: 500px;
+        height: 200px;
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    .extensions-prompt {
+        font-size: 13px;
+        margin-bottom: 7px;
+    }
+}

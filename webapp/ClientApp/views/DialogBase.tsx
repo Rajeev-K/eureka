@@ -96,7 +96,6 @@ export class DialogBase {
 
     protected setInitialFocus(): void {
         const focusables = ViewUtils.focusableChildren(this.el);
-        console.log(focusables);
         if (focusables.length > 0)
             focusables[0].focus();
     }
