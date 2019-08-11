@@ -219,7 +219,7 @@ button {
 }
 
 .admin-page {
-    padding: 8px 10px 0 25px;
+    padding: 8px 10px 50px 25px;
     font-size: 13px;
 
     .breadcrumb {
@@ -512,6 +512,7 @@ button {
         height: 200px;
         min-height: 150px;
         resize: vertical;
+        font-family: Consolas, monospace;
     }
 
     .extensions-prompt {
@@ -527,10 +528,16 @@ button {
         height: 200px;
         min-height: 150px;
         resize: vertical;
+        font-family: Consolas, monospace;
     }
 
     .folders-prompt {
         font-size: 13px;
         margin-bottom: 7px;
     }
+}
+
+.unsupported-browser {
+    padding: 5px 5px 5px 25px;
+    color: firebrick;
 }

@@ -1,0 +1,16 @@
+{
+    "short_name": "eureka!",
+    "name": "eureka!",
+    "icons": [
+        {
+            "src": "icon.png",
+            "type": "image/png",
+            "sizes": "207x207"
+        }
+    ],
+    "start_url": "/search",
+    "background_color": "#fff",
+    "display": "standalone",
+    "scope": "/",
+    "theme_color": "#0082df"
+}

@@ -6,11 +6,15 @@
     <title>eureka!</title>
     <link rel="stylesheet" href="~/app.css" type="text/css" />
     <link rel="stylesheet" href="~/fontawesome/css/all.min.css" type="text/css" />
+    <link rel="manifest" href="~/manifest.json">
     <script src="~/uibuilder-1.6.0.js"></script>
     <script src="~/mvc-router-1.0.3.js"></script>
     <script src="~/require.js"></script>
     <script src="~/all.js"></script>
     <script>
+         if (!window['EventSource']) {
+             document.write('<div class="unsupported-browser">This browser is not supported because it does not support EventSource. Use another browser.</div>');
+         }
          window.onload = function () {
              require.config({
                  paths: {
