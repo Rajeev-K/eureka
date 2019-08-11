@@ -6,11 +6,15 @@ import { MessageBox } from "../views/MessageBox";
 import { ExtensionsDialog } from "../views/ExtensionsDialog";
 import { FoldersDialog } from "../views/FoldersDialog";
 import { IndexRequest } from "../models/IndexRequest";
+import * as LocalStorage from "../LocalStorage";
+
+const SkippableFoldersKey = "skippablefolders";
+const IndexableExtensionsKey = "indexableextensions";
 
 export class AdminController extends MvcRouter.Controller {
     private adminPage: AdminPage;
-    private extensions: string[];
-    private folders: string[];
+    private indexableExtensions: string[] = [];
+    private skippableFolders: string[] = [];
 
     constructor(protected app: App) {
         super();
@@ -40,25 +44,40 @@ export class AdminController extends MvcRouter.Controller {
 
     private initPage(): void {
         this.displayIndexStatus();
+
         fetch('/eureka-service/api/engine/folders')
             .then(response => response.json())
             .then(folders => this.isLoaded() && this.adminPage.setFolderSuggestions(folders));
-        fetch('/eureka-service/api/engine/skippablefolders')
-            .then(response => response.json())
-            .then(folders => {
-                if (this.isLoaded()) {
-                    this.folders = folders;
-                    this.adminPage.setSkippableFolders(folders);
-                }
-            });
-        fetch('/eureka-service/api/engine/indexableextensions')
-            .then(response => response.json())
-            .then(extensions => {
-                if (this.isLoaded()) {
-                    this.extensions = extensions;
-                    this.adminPage.setIndexableExtensions(extensions);
-                }
-            });
+
+        this.skippableFolders = LocalStorage.get(SkippableFoldersKey);
+        if (this.skippableFolders) {
+            this.adminPage.setSkippableFolders(this.skippableFolders);
+        }
+        else {
+            fetch('/eureka-service/api/engine/skippablefolders')
+                .then(response => response.json())
+                .then(folders => {
+                    if (this.isLoaded()) {
+                        this.skippableFolders = folders;
+                        this.adminPage.setSkippableFolders(folders);
+                    }
+                });
+        }
+
+        this.indexableExtensions = LocalStorage.get(IndexableExtensionsKey);
+        if (this.indexableExtensions) {
+            this.adminPage.setIndexableExtensions(this.indexableExtensions);
+        }
+        else {
+            fetch('/eureka-service/api/engine/indexableextensions')
+                .then(response => response.json())
+                .then(extensions => {
+                    if (this.isLoaded()) {
+                        this.indexableExtensions = extensions;
+                        this.adminPage.setIndexableExtensions(extensions);
+                    }
+                });
+        }
     }
 
     private onDeleteIndexClick(): void {
@@ -120,8 +139,8 @@ export class AdminController extends MvcRouter.Controller {
         }
         const indexRequest: IndexRequest = {
             path: folder,
-            indexableExtensions: this.extensions,
-            skippableFolders: this.folders
+            indexableExtensions: this.indexableExtensions,
+            skippableFolders: this.skippableFolders
         };
         const options = {
             method: 'POST',
@@ -145,21 +164,23 @@ export class AdminController extends MvcRouter.Controller {
 
     private onEditIndexableExtensions(): void {
         const dialog = new ExtensionsDialog();
-        dialog.extensions = this.extensions;
+        dialog.extensions = [...this.indexableExtensions];
         dialog.showDialog()
             .then(() => {
-                this.extensions = dialog.extensions;
-                this.adminPage.setIndexableExtensions(this.extensions);
-            }).catch(() => null);
+                this.indexableExtensions = dialog.extensions;
+                this.adminPage.setIndexableExtensions(this.indexableExtensions);
+                LocalStorage.set(IndexableExtensionsKey, this.indexableExtensions);
+            }).catch(() => {});
     }
 
     private onEditSkippableFolders(): void {
         const dialog = new FoldersDialog();
-        dialog.folders = this.folders;
+        dialog.folders = [...this.skippableFolders];
         dialog.showDialog()
             .then(() => {
-                this.folders = dialog.folders;
-                this.adminPage.setSkippableFolders(this.folders);
-            }).catch(() => null);
+                this.skippableFolders = dialog.folders;
+                this.adminPage.setSkippableFolders(this.skippableFolders);
+                LocalStorage.set(SkippableFoldersKey, this.skippableFolders);
+            }).catch(() => {});
     }
 }
