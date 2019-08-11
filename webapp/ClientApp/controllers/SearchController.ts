@@ -38,7 +38,7 @@ export class SearchController extends MvcRouter.Controller {
             .then(response => response.json())
             .then(result => {
                 if (this.isLoaded()) {
-                    if (result.count === 0)
+                    if (result.fileCount === 0)
                         this.searchPage.displayWelcomeScreen();
                 }
             });

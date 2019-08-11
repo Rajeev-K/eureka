@@ -22,7 +22,7 @@ export class FoldersDialog extends DialogBase {
 
     protected init(): void {
         super.init();
-        this.listEditor.value = this.folders.join(', ');
+        this.listEditor.value = this.folders.map(f => f && f[0] === '/' ? f.substring(1) : f).join(", ");
     }
 
     protected onOK(): void {

@@ -60,7 +60,7 @@ export class AdminPage extends UIBuilder.Component<AdminPageProps> {
     }
 
     public setSkippableFolders(folders: string[]): void {
-        this.skippableFoldersDisplay.innerText = folders.join(", ");
+        this.skippableFoldersDisplay.innerText = folders.map(f => f && f[0] === '/' ? f.substring(1) : f).join(", ");
     }
 
     public setIndexableExtensions(extensions: string[]): void {
@@ -103,7 +103,7 @@ export class AdminPage extends UIBuilder.Component<AdminPageProps> {
                         <h5>Files with the following extensions will be indexed:</h5>
                         <div className="indexable-extensions" ref={el => this.indexableExtensionsDisplay = el}></div>
                         <button onClick={() => this.props.onEditIndexableExtensions()}>Edit...</button>
-                        <h5>The following folders will be skipped:</h5>
+                        <h5>Folders with the following names will be skipped:</h5>
                         <div className="skippable-folders" ref={el => this.skippableFoldersDisplay = el}></div>
                         <button onClick={() => this.props.onEditSkippableFolders()}>Edit...</button>
                     </div>
