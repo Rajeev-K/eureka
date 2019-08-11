@@ -5,6 +5,7 @@ import { AdminPage, AdminPageProps } from "../views/AdminPage";
 import { MessageBox } from "../views/MessageBox";
 import { ExtensionsDialog } from "../views/ExtensionsDialog";
 import { FoldersDialog } from "../views/FoldersDialog";
+import { IndexRequest } from "../models/IndexRequest";
 
 export class AdminController extends MvcRouter.Controller {
     private adminPage: AdminPage;
@@ -117,10 +118,19 @@ export class AdminController extends MvcRouter.Controller {
             MessageBox.show('Specify a folder to index.');
             return;
         }
-        const options = {
-            method: 'POST'
+        const indexRequest: IndexRequest = {
+            path: folder,
+            indexableExtensions: this.extensions,
+            skippableFolders: this.folders
         };
-        fetch(`/eureka-service/api/engine/index?path=${encodeURIComponent(folder)}`, options)
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(indexRequest),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        fetch('/eureka-service/api/engine/index', options)
             .then(response => response.json())
             .then(result => {
                 if (this.isLoaded()) {

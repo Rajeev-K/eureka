@@ -1,15 +1,15 @@
 // Copyright (c) 2019-present, Rajeev-K.
 
 // Usage examples:
-// GET    http://localhost:8888/eureka-service/api/engine
-// GET    http://localhost:8888/eureka-service/api/engine/status
-// GET    http://localhost:8888/eureka-service/api/engine/search?query=const
-// GET    http://localhost:8888/eureka-service/api/engine/file?path=/projects/foo
-// POST   http://localhost:8888/eureka-service/api/engine/index?path=/projects/foo
-// DELETE http://localhost:8888/eureka-service/api/engine/index
-// GET    http://localhost:8888/eureka-service/api/engine/folders
-// GET    http://localhost:8888/eureka-service/api/engine/skippablefolders
-// GET    http://localhost:8888/eureka-service/api/engine/indexableextensions
+// GET    http://localhost:8080/eureka-service/api/engine
+// GET    http://localhost:8080/eureka-service/api/engine/status
+// GET    http://localhost:8080/eureka-service/api/engine/search?query=const
+// GET    http://localhost:8080/eureka-service/api/engine/file?path=/projects/foo
+// POST   http://localhost:8080/eureka-service/api/engine/index?path=/projects/foo
+// DELETE http://localhost:8080/eureka-service/api/engine/index
+// GET    http://localhost:8080/eureka-service/api/engine/folders
+// GET    http://localhost:8080/eureka-service/api/engine/skippablefolders
+// GET    http://localhost:8080/eureka-service/api/engine/indexableextensions
 
 package eureka;
 
@@ -130,12 +130,14 @@ public class EurekaService {
         return eventOutput;
     }
 
-    private void startIndexingThread(String path) {
+    private void startIndexingThread(IndexRequest indexRequest) {
         Thread thread = new Thread() {
             public void run() {
                 try {
                     SearchEngine engine = SearchEngine.getInstance();
-                    engine.addFolderToIndex(path);
+                    engine.setIndexableExtensions(indexRequest.getIndexableExtensions());
+                    engine.setSkippableFolders(indexRequest.getSkippableFolders());
+                    engine.addFolderToIndex(indexRequest.getPath());
                 }
                 catch (IOException ex) {
                     System.out.println(ex.getMessage());
@@ -148,15 +150,20 @@ public class EurekaService {
     @POST
     @Path("/index")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response indexFolder(@QueryParam("path") String path) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response indexFolder(IndexRequest indexRequest) {
+        if (indexRequest == null) {
+            throw new BadRequestException("Index request is not valid.");
+        }
+        String path = indexRequest.getPath();
         if (path == null || path.length() == 0) {
-            throw new BadRequestException("path parameter must be supplied");
+            throw new BadRequestException("Index request does not have a valid path.");
         }
         final java.nio.file.Path folderPath = Paths.get(path);
         if (!Files.isDirectory(folderPath)) {
             throw new BadRequestException("Supplied path does not point to a folder.");
         }
-        startIndexingThread(path);
+        startIndexingThread(indexRequest);
         return Response.ok("{\"indexingStarted\": true}").build();
     }
 
@@ -213,22 +220,6 @@ public class EurekaService {
         }
     }
 
-    @POST
-    @Path("/indexableextensions")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response setIndexableExtensions(String[] extensions) {
-        try {
-            System.out.println(extensions.toString());
-            SearchEngine engine = SearchEngine.getInstance();
-            engine.setIndexableExtensions(extensions);
-            return Response.ok("{\"success\": true}").build();
-        }
-        catch (IOException ex) {
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-    }
-
     @GET
     @Path("/skippablefolders")
     @Produces(MediaType.APPLICATION_JSON)
@@ -237,22 +228,6 @@ public class EurekaService {
             SearchEngine engine = SearchEngine.getInstance();
             String[] skippableFolders = engine.getSkippableFolders();
             return Response.ok(skippableFolders).build();
-        }
-        catch (IOException ex) {
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-    }
-
-    @POST
-    @Path("/skippablefolders")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response setSkippableFolders(String[] skippableFolders) {
-        try {
-            System.out.println(skippableFolders.toString());
-            SearchEngine engine = SearchEngine.getInstance();
-            engine.setSkippableFolders(skippableFolders);
-            return Response.ok("{\"success\": true}").build();
         }
         catch (IOException ex) {
             throw new InternalServerErrorException(ex.getMessage());
