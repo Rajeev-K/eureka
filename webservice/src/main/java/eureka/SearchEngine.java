@@ -138,10 +138,9 @@ public class SearchEngine {
 
     /**
      * addFileToIndex
-     * @folder Folder of the file, as specified by the user. Used to display all indexed folders.
      * @file The full path to the file.
      */
-    public void addFileToIndex(String folder, Path filePath, long lastModified) throws IOException {
+    public void addFileToIndex(Path filePath, long lastModified) throws IOException {
         InputStream stream = null;
         try {
             stream = Files.newInputStream(filePath);
@@ -219,7 +218,7 @@ public class SearchEngine {
                     try {
                         if (isFileIndexable(filePath)) {
                             currentlyIndexing = filePath.toString();
-                            addFileToIndex(folder, filePath, attrs.lastModifiedTime().toMillis());
+                            addFileToIndex(filePath, attrs.lastModifiedTime().toMillis());
                         }
                     }
                     catch (IOException ignore) {
