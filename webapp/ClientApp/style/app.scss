@@ -519,3 +519,18 @@ button {
         margin-bottom: 7px;
     }
 }
+
+.folders-dialog {
+    textarea {
+        box-sizing: border-box;
+        width: 500px;
+        height: 200px;
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    .folders-prompt {
+        font-size: 13px;
+        margin-bottom: 7px;
+    }
+}

@@ -4,10 +4,12 @@ import { App } from "../App";
 import { AdminPage, AdminPageProps } from "../views/AdminPage";
 import { MessageBox } from "../views/MessageBox";
 import { ExtensionsDialog } from "../views/ExtensionsDialog";
+import { FoldersDialog } from "../views/FoldersDialog";
 
 export class AdminController extends MvcRouter.Controller {
     private adminPage: AdminPage;
     private extensions: string[];
+    private folders: string[];
 
     constructor(protected app: App) {
         super();
@@ -42,7 +44,12 @@ export class AdminController extends MvcRouter.Controller {
             .then(folders => this.isLoaded() && this.adminPage.setFolderSuggestions(folders));
         fetch('/eureka-service/api/engine/skippablefolders')
             .then(response => response.json())
-            .then(folders => this.isLoaded() && this.adminPage.setSkippableFolders(folders));
+            .then(folders => {
+                if (this.isLoaded()) {
+                    this.folders = folders;
+                    this.adminPage.setSkippableFolders(folders);
+                }
+            });
         fetch('/eureka-service/api/engine/indexableextensions')
             .then(response => response.json())
             .then(extensions => {
@@ -133,9 +140,16 @@ export class AdminController extends MvcRouter.Controller {
             .then(() => {
                 this.extensions = dialog.extensions;
                 this.adminPage.setIndexableExtensions(this.extensions);
-            });
+            }).catch(() => null);
     }
 
     private onEditSkippableFolders(): void {
+        const dialog = new FoldersDialog();
+        dialog.folders = this.folders;
+        dialog.showDialog()
+            .then(() => {
+                this.folders = dialog.folders;
+                this.adminPage.setSkippableFolders(this.folders);
+            }).catch(() => null);
     }
 }
