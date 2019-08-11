@@ -194,6 +194,8 @@ public class SearchEngine {
     }
 
     public void addFolderToIndex(String folder) throws IOException {
+        if (indexWriter == null)
+            throw new RuntimeException("Can't index folder because search engine is offline.");
         try {
             final Path folderPath = Paths.get(folder);
             if (!Files.isDirectory(folderPath)) {
@@ -260,6 +262,8 @@ public class SearchEngine {
 
     public List<SearchResult> performSearch(String q) throws ParseException, IOException {
         log.info("searching, query=" + q);
+        if (searcherManager == null)
+            throw new RuntimeException("Can't perform search because search engine is offline.");
         IndexSearcher searcher = searcherManager.acquire();
         try {
             QueryParser parser = new QueryParser(ContentsField, analyzer);

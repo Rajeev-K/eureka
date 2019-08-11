@@ -18,7 +18,6 @@ COPY webservice/target/eureka-service/ ${TOMCAT_HOME}/webapps/eureka-service/
 RUN mkdir -p ${TOMCAT_HOME}/webapps/search/lib
 COPY webapp/wwwroot/ ${TOMCAT_HOME}/webapps/search/
 
-# To view web pages:
-#    http://localhost:8888/search
+EXPOSE 8080
 
 CMD /usr/local/share/tomcat/bin/catalina.sh run
