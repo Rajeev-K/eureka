@@ -37,21 +37,4 @@ RUN set -xe \
 # To run tomcat in foreground:
 #    /usr/local/share/tomcat/bin/catalina.sh run
 
-# Add additional jars
-RUN mkdir -p ${JARS_HOME}
-RUN set -xe \
-  && cd /tmp \
-  && wget https://repo1.maven.org/maven2/com/google/code/gson/gson/${GSON_VERSION}/gson-${GSON_VERSION}.jar \
-  && mv gson-${GSON_VERSION}.jar ${JARS_HOME}
-
-# Set classpath
-ENV CLASSPATH=$CLASSPATH:\
-${LUCENE_HOME}/core/lucene-core-${LUCENE_VERSION}.jar:\
-${LUCENE_HOME}/queryparser/lucene-queryparser-${LUCENE_VERSION}.jar:\
-${LUCENE_HOME}/analysis/common/lucene-analyzers-common-${LUCENE_VERSION}.jar:\
-${LUCENE_HOME}/demo/lucene-demo-${LUCENE_VERSION}.jar:\
-${TOMCAT_HOME}/lib/servlet-api.jar:\
-${JARS_HOME}/gson-${GSON_VERSION}.jar:\
-.
-
 WORKDIR /projects

@@ -1,2 +1,2 @@
 # eureka!
-Lucene-based full-text search engine for your source code
+Lucene-based search engine for your source code
