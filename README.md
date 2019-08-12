@@ -23,6 +23,9 @@ That's it! You are now running eureka! In your web browser go to http://localhos
 * Use the integrated full-fledged source code viewer (Monaco editor from VSCode) to view your source code.
 * Feedback during the indexing process. In the web interface you can see what is being indexed. Other tools just disappear for hours, leaving you to wonder what it is doing, or whether it is doing anything at all.
 
+# How to build
+If you would like to build the Docker image on your machine follow the [Build](Build.md) instructions.
+
 ![Screenshot of search page](/images/eureka_search_screen.png?raw=true)
 
 ![Screenshot of index management page](/images/eureka_admin_screen.png?raw=true)
