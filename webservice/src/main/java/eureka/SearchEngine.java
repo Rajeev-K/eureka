@@ -146,8 +146,7 @@ public class SearchEngine {
             stream = Files.newInputStream(filePath);
             Document doc = new Document();
 
-            Field pathField = new StringField(PathField, filePath.toString(), Field.Store.YES);
-            doc.add(pathField);
+            doc.add(new StringField(PathField, filePath.toString(), Field.Store.YES));
 
             doc.add(new LongPoint("modified", lastModified));
 
