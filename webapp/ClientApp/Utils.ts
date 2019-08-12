@@ -42,6 +42,7 @@ const extensionMap = {
     ".cmd":     "bat",
     ".c":       "c",
     ".h":       "c",
+    ".cc":      "cpp",
     ".cpp":     "cpp",
     ".hpp":     "cpp",
     ".cs":      "csharp",
