@@ -22,7 +22,7 @@ You can now exit the build-env container.
 
 ## Build the client web app
 
-Go to the webapp folder by typing ```cd webapp```. Type ```npm install`` followed by ```gulp```.
+Go to the webapp folder by typing ```cd webapp```. Type ```npm install``` followed by ```gulp```.
 
 ## Build the Docker image
 
