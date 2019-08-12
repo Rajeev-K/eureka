@@ -30,4 +30,4 @@ Now that the web service and web app have been built we are ready to build the D
 
 # Technologies used
 
-We use [Apache Lucene](https://lucene.apache.org/) to index and search. We use Java and [Jersey](https://jersey.github.io/) to build the web service. The web server is [Apache Tomcat](http://tomcat.apache.org/). For the client app we use TypeScript, [UIBuilder](https://github.com/wisercoder/uibuilder) for building UI components and pages, and [MVC Router](https://github.com/Rajeev-K/mvc-router) for routing.
+We use [Apache Lucene](https://lucene.apache.org/) to index and search. Since Lucene is written in Java our web service is also written in Java. We use [Jersey](https://jersey.github.io/) to build the RESTful web service. [Apache Maven](https://maven.apache.org/) to build the project. The web server is [Apache Tomcat](http://tomcat.apache.org/). For the client app we use TypeScript, [UIBuilder](https://github.com/wisercoder/uibuilder) for building UI components and pages, and [MVC Router](https://github.com/Rajeev-K/mvc-router) for routing.
