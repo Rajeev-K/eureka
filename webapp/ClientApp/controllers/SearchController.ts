@@ -83,7 +83,14 @@ export class SearchController extends MvcRouter.Controller {
         }
         fetch(`/eureka-service/api/engine/search?query=${encodeURIComponent(query)}`)
             .then(response => response.json())
-            .then(result => this.isLoaded() && this.searchPage.displayResult(result))
+            .then(result => {
+                if (this.isLoaded()) {
+                    if (result.error)
+                        this.searchPage.displayError(result);
+                    else
+                        this.searchPage.displayResult(result);
+                }
+            })
             .catch(error => this.isLoaded() && this.searchPage.displayError(error));
     }
 

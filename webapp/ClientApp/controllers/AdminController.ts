@@ -47,7 +47,14 @@ export class AdminController extends MvcRouter.Controller {
 
         fetch('/eureka-service/api/engine/folders')
             .then(response => response.json())
-            .then(folders => this.isLoaded() && this.adminPage.setFolderSuggestions(folders));
+            .then(result => {
+                if (this.isLoaded()) {
+                    if (result.error)
+                        this.adminPage.displayError(result);
+                    else
+                        this.adminPage.setFolderSuggestions(result);
+                }
+            });
 
         this.skippableFolders = LocalStorage.get(SkippableFoldersKey);
         if (this.skippableFolders) {
@@ -88,8 +95,13 @@ export class AdminController extends MvcRouter.Controller {
             .then(() => fetch('/eureka-service/api/engine/index', options))
             .then(response => response.json())
             .then(result => {
-                this.adminPage.displayResult(result);
-                this.displayIndexStatus();
+                if (result.error) {
+                    this.adminPage.displayError(result);
+                }
+                else {
+                    this.adminPage.displayResult(result);
+                    this.displayIndexStatus();
+                }
             })
             .catch(error => {
                 if (this.isLoaded()) {
@@ -104,10 +116,15 @@ export class AdminController extends MvcRouter.Controller {
             .then(response => response.json())
             .then(result => {
                 if (this.isLoaded()) {
-                    if (result.indexingInProgress)
-                        this.displayIndexingProgress();
-                    else
-                        this.adminPage.displayCount(`There are ${result.fileCount} files in the index.`);
+                    if (result.error) {
+                        this.adminPage.displayError(result);
+                    }
+                    else {
+                        if (result.indexingInProgress)
+                            this.displayIndexingProgress();
+                        else
+                            this.adminPage.displayCount(`There are ${result.fileCount} files in the index.`);
+                    }
                 }
             });
     }
