@@ -115,6 +115,9 @@ public class EurekaService {
                         eventOutput.write(new OutboundEvent.Builder().name("message").data(String.class, currentFile).build());
                     }
                 }
+                catch (org.apache.catalina.connector.ClientAbortException ex) {
+                    System.out.println("getIndexingProgress: Client has closed connection.");
+                }
                 catch (IOException ex) {
                     throw new RuntimeException("Error occured when writing event.", ex);
                 }

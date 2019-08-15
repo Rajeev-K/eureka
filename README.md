@@ -12,7 +12,7 @@ First install [Docker Desktop](https://docs.docker.com/docker-for-windows/instal
 Then open Command Prompt and type the following command. Make sure to replace ```<path>``` with the path to your source code folder, for example ```c:\repos```.
 
 ```
-docker run -it -v <path>:/projects -p 8888:8080 --name eurekasearch eurekasearch/eurekasearch:latest
+docker run --rm -d -v <path>:/projects -p 8888:8080 --name eurekasearch eurekasearch/eurekasearch:latest
 ```
 
 That's it! You are now running eureka! In your web browser go to http://localhost:8888/search/ to index and search your source code.
