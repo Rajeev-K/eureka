@@ -4,6 +4,7 @@ import { CommonHeader } from "./CommonHeader";
 import { SearchResultItem } from "../models/Models";
 import { FilterControl, Filter } from "./FilterControl";
 import { SplitterControl } from "./SplitterControl";
+import { SourceCodeViewer } from "./SourceCodeViewer";
 import { addClassExclusively } from "./ViewUtils";
 import * as Utils from "../Utils";
 
@@ -14,7 +15,6 @@ export interface SearchPageProps extends UIBuilder.Props<SearchPage> {
 }
 
 export class SearchPage extends UIBuilder.Component<SearchPageProps> {
-    private editor: monaco.IEditor;
     private root: HTMLElement;
     private splitterControl: SplitterControl;
     private input: HTMLInputElement;
@@ -22,7 +22,7 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
     private errorDisplay: HTMLElement;
     private searchDisplay: HTMLElement;
     private filterDisplay: HTMLElement;
-    private sourceDisplay: HTMLElement;
+    private sourceCodeViewer: SourceCodeViewer;
 
     constructor(props) {
         super(props);
@@ -38,8 +38,8 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
 
     public layout(): void {
         this.splitterControl.layout();
-        if (this.editor)
-            this.editor.layout();
+        if (this.sourceCodeViewer)
+            this.sourceCodeViewer.layout();
     }
 
     public displayWelcomeScreen(): void {
@@ -87,6 +87,11 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
         const resultDisplay = this.getRendering(filteredResults, noRowsMessage);
         this.searchDisplay.innerHTML = '';
         this.searchDisplay.appendChild(resultDisplay);
+        window.setTimeout(() => {
+            this.splitterControl.relayout();
+            if (this.sourceCodeViewer)
+                this.sourceCodeViewer.layout();
+        });
     }
 
     public displayError(error: any): void {
@@ -110,17 +115,8 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
         }
     }
 
-    public displaySourceCode(sourceCode: string, language: string): void {
-        this.sourceDisplay.innerHTML = '';
-        require(['vs/editor/editor.main'], monaco => {
-            this.editor = monaco.editor.create(this.sourceDisplay, {
-                language: language,
-                readOnly: true,
-                scrollBeyondLastLine: false,
-                renderLineHighlight: false,
-                value: sourceCode
-            });
-        });
+    public displaySourceCode(sourceCode: string, language: string, path: string): void {
+        this.sourceCodeViewer.displaySourceCode(sourceCode, language, path);
     }
 
     private getRendering(result: SearchResultItem[], noRowsMessage: string): JSX.Element {
@@ -165,8 +161,8 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
     }
 
     private onSplitterMoved(): void {
-        if (this.editor)
-            this.editor.layout();
+        if (this.sourceCodeViewer)
+            this.sourceCodeViewer.layout();
     }
 
     public render(): JSX.Element {
@@ -194,7 +190,7 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
                 <SplitterControl className="result-splitter" ref={splitter => this.splitterControl = splitter}
                     onSplitterMoved={() => this.onSplitterMoved()}
                     firstChild={<div className="search-result" ref={el => this.searchDisplay = el}></div> as HTMLElement}
-                    secondChild={<div className="source-display" ref={el => this.sourceDisplay = el}></div> as HTMLElement} />
+                    secondChild={<SourceCodeViewer ref={el => this.sourceCodeViewer = el} /> as HTMLElement} />
             </div>
         )
     }

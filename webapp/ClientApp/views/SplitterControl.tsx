@@ -36,6 +36,18 @@ export class SplitterControl extends UIBuilder.Component<SplitterControlProps> {
         this.makeSecondChildFillRemainingHeight();
     }
 
+    /** Resizes children without changing splitter position. */
+    public relayout(): void {
+        const availableHeight = this.availableHeight();
+        let firstChildHeight = this.firstChild.offsetHeight;
+        if (firstChildHeight < 0)
+            firstChildHeight = 0;
+        if (firstChildHeight > availableHeight)
+            firstChildHeight = availableHeight;
+        this.firstChild.style.height = firstChildHeight + 'px';
+        this.makeSecondChildFillRemainingHeight();
+    }
+
     private makeSecondChildFillRemainingHeight(): void {
         const firstChildHeight = this.firstChild.offsetHeight;
         const secondChildHeight = this.availableHeight() - firstChildHeight;

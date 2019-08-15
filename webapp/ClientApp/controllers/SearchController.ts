@@ -69,7 +69,7 @@ export class SearchController extends MvcRouter.Controller {
             .then(text => {
                 if (this.isLoaded()) {
                     const language = this.getLanguageFromPath(path);
-                    this.searchPage.displaySourceCode(text, language);
+                    this.searchPage.displaySourceCode(text, language, path);
                 }
             })
             .catch(error => this.isLoaded() && this.searchPage.displayError(error));

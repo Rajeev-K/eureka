@@ -150,8 +150,9 @@ button {
     }
 
     .result-splitter {
-        margin-top: 15px;
+        margin-top: 5px;
         flex: 1;
+        min-height: 0;
         overflow: hidden;
     }
 
@@ -202,6 +203,29 @@ button {
                 }
             }
         }
+    }
+}
+
+.source-code-viewer {
+    display: flex;
+    flex-direction: column;
+
+    .file-picker {
+        .combo-rect {
+            border-top: none;
+            border-left: none;
+            border-right: none;
+
+            input[type=text].combo-textbox {
+                font-family: Consolas, monospace;
+                padding-left: 18px;
+            }
+        }
+    }
+
+    .source-display {
+        flex: 1;
+        min-height: 0;
     }
 }
 
