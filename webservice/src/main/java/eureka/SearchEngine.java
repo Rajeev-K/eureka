@@ -93,7 +93,7 @@ public class SearchEngine {
     }
 
     private void bringOnline() throws IOException {
-        analyzer = new SourceCodeAnalyzer();
+        analyzer = new StandardAnalyzer();
 
         FSDirectory directory = FSDirectory.open(Paths.get(IndexPath));
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
@@ -154,7 +154,8 @@ public class SearchEngine {
             // and indexed, but not stored. Note that FileReader expects the file to be in UTF-8 encoding.
             // If that's not the case searching for special characters will fail.
             InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-            doc.add(new TextField(ContentsField, new BufferedReader(reader)));
+            InputStreamReader replacement = Utils.substituteChars(reader);
+            doc.add(new TextField(ContentsField, new BufferedReader(replacement)));
 
             if (indexWriter.getConfig().getOpenMode() == OpenMode.CREATE) {
                 indexWriter.addDocument(doc);
@@ -264,7 +265,7 @@ public class SearchEngine {
         IndexSearcher searcher = searcherManager.acquire();
         try {
             QueryParser parser = new QueryParser(ContentsField, analyzer);
-            Query query = parser.parse(q.toLowerCase());
+            Query query = parser.parse(q);
             TopDocs results = searcher.search(query, MAX_RESULTS);
             ScoreDoc[] hits = results.scoreDocs;
 
