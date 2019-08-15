@@ -216,7 +216,7 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
         const chevronStyle = { visibility: this.suggestions && this.suggestions.length ? 'visible' : 'hidden' };
         return (
             <div className={classes} ref={el => this.root = el}>
-                {prompt && <div className="combo-prompt">{this.props.prompt}</div>}
+                {!!this.props.prompt && <div className="combo-prompt">{this.props.prompt}</div>}
                 <div className="combo-rect" ref={el => this.outerRect = el}>
                     <input type="text" className="combo-textbox"ref={el => this.textInput = el}
                         placeholder={this.props.placeholder} spellcheck={false}
