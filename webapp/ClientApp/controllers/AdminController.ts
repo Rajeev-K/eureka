@@ -42,17 +42,22 @@ export class AdminController extends MvcRouter.Controller {
         appBody.appendChild(element);
     }
 
+    private extractFolders(items: string[]): string[] {
+        return items.filter(s => s.endsWith("/")).map(s => s.substr(0, s.length - 1));
+    }
+
     private initPage(): void {
         this.displayIndexStatus();
 
-        fetch('/eureka-service/api/engine/folders')
+        const path = "/projects";
+        fetch(`/eureka-service/api/engine/foldercontents?path=${encodeURIComponent(path)}`)
             .then(response => response.json())
             .then(result => {
                 if (this.isLoaded()) {
                     if (result.error)
                         this.adminPage.displayError(result);
                     else
-                        this.adminPage.setFolderSuggestions(result);
+                        this.adminPage.setFolderSuggestions(this.extractFolders(result));
                 }
             });
 

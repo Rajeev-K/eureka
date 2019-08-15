@@ -7,7 +7,7 @@
 // GET    http://localhost:8888/eureka-service/api/engine/file?path=/projects/foo
 // POST   http://localhost:8888/eureka-service/api/engine/index
 // DELETE http://localhost:8888/eureka-service/api/engine/index
-// GET    http://localhost:8888/eureka-service/api/engine/folders
+// GET    http://localhost:8888/eureka-service/api/engine/foldercontents
 // GET    http://localhost:8888/eureka-service/api/engine/skippablefolders
 // GET    http://localhost:8888/eureka-service/api/engine/indexableextensions
 // GET    http://localhost:8888/eureka-service/api/engine/progress
@@ -175,6 +175,10 @@ public class EurekaService {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/file")
     public String getFileContents(@QueryParam("path") String path) {
+        if (path == null)
+            throw new BadRequestException("Path must be specified");
+        if (!path.startsWith("/projects"))
+            throw new BadRequestException("Path must start with /projects");
         try {
             return new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
         }
@@ -183,27 +187,37 @@ public class EurekaService {
         }
     }
 
-    private List<String> getAvailableFolders() throws IOException {
-        List<String> folders = new ArrayList<String>();
-        final java.nio.file.Path folderPath = Paths.get("/projects");
+    private List<String> getItemsInFolder(String parentFolder) throws IOException {
+        List<String> items = new ArrayList<String>();
+        final java.nio.file.Path folderPath = Paths.get(parentFolder);
         Files.walkFileTree(folderPath, new SimpleFileVisitor<java.nio.file.Path>() {
             @Override
             public FileVisitResult preVisitDirectory(java.nio.file.Path path, BasicFileAttributes attrs) throws IOException {
                 String folder = path.toString();
-                folders.add(folder);
-                return folder.equals("/projects") ? FileVisitResult.CONTINUE : FileVisitResult.SKIP_SUBTREE;
+                items.add(folder + "/");
+                return folder.equals(parentFolder) ? FileVisitResult.CONTINUE : FileVisitResult.SKIP_SUBTREE;
+            }
+
+            @Override
+            public FileVisitResult visitFile(java.nio.file.Path filePath, BasicFileAttributes attrs) throws IOException {
+                items.add(filePath.toString());
+                return FileVisitResult.CONTINUE;
             }
         });
-        return folders;
+        return items;
     }
 
     @GET
-    @Path("/folders")
+    @Path("/foldercontents")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getFolders() {
+    public Response getFolderContents(@QueryParam("path") String path) {
+        if (path == null)
+            throw new BadRequestException("Path must be specified");
+        if (!path.startsWith("/projects"))
+            throw new BadRequestException("Path must start with /projects");
         try {
-            List<String> folders = getAvailableFolders();
-            return Response.ok(folders).build();
+            List<String> items = getItemsInFolder(path);
+            return Response.ok(items).build();
         }
         catch (IOException ex) {
             throw new InternalServerErrorException(ex.getMessage());
