@@ -97,7 +97,8 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
             message = error.message;
         else
             message = JSON.stringify(error);
-        this.errorDisplay.innerText = message;
+        this.errorDisplay.title = message;
+        this.errorDisplay.innerText = message.replace(/\n/g, ' ');
     }
 
     private onResultTableClick(ev): void {

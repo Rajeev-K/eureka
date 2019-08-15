@@ -137,7 +137,11 @@ button {
     .error-message {
         color: firebrick;
         font-size: 14px;
-        padding-left: 20px;
+        padding-left: 24px;
+        padding-top: 3px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .page-title {
