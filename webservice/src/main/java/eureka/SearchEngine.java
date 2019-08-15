@@ -93,7 +93,7 @@ public class SearchEngine {
     }
 
     private void bringOnline() throws IOException {
-        analyzer = new StandardAnalyzer();
+        analyzer = new SourceCodeAnalyzer();
 
         FSDirectory directory = FSDirectory.open(Paths.get(IndexPath));
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
@@ -154,8 +154,7 @@ public class SearchEngine {
             // and indexed, but not stored. Note that FileReader expects the file to be in UTF-8 encoding.
             // If that's not the case searching for special characters will fail.
             InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-            InputStreamReader replacement = Utils.substituteChars(reader);
-            doc.add(new TextField(ContentsField, new BufferedReader(replacement)));
+            doc.add(new TextField(ContentsField, new BufferedReader(reader)));
 
             if (indexWriter.getConfig().getOpenMode() == OpenMode.CREATE) {
                 indexWriter.addDocument(doc);

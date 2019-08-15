@@ -22,10 +22,6 @@ public class WebApplicationExceptionMapper extends WebApplicationException imple
             status = 404;
         else
             status = 500;
-        return Response.status(status).entity(errorMessageJson(ex.getMessage())).type("application/json").build();
+        return Response.status(status).entity(new ErrorResult(ex.getMessage())).type("application/json").build();
     }
-
-    private String errorMessageJson(String message) {
-        return String.format("{\"message\": \"%s\", \"error\": true}", message);
-    }    
 }

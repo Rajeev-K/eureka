@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2009, 2013 Matthieu Casanova
  * Copyright (C) 2009, 2011 Shlomy Reinstein
+ * Copyright (C) 2019, Rajeev-K
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,6 +20,9 @@
 package eureka;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.LowerCaseFilter;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.util.CharTokenizer;
 
 public class SourceCodeAnalyzer extends Analyzer
@@ -26,7 +30,9 @@ public class SourceCodeAnalyzer extends Analyzer
     @Override
     protected TokenStreamComponents createComponents(String fieldName)
     {
-        return new TokenStreamComponents(new SourceCodeTokenizer());
+        Tokenizer source = new SourceCodeTokenizer();
+        TokenStream filter = new LowerCaseFilter(source);
+        return new TokenStreamComponents(source, filter);
     }
 
     private static class SourceCodeTokenizer extends CharTokenizer
