@@ -41,7 +41,7 @@ export class SourceCodeViewer extends UIBuilder.Component<SourceCodeViewerProps>
     public render(): JSX.Element {
         return (
             <div className="source-code-viewer">
-                <ComboBox className="file-picker" ref={el => this.filePicker = el}
+                <ComboBox className="file-picker" isEditable={true} ref={el => this.filePicker = el}
                           onItemSelected={item => this.props.onFileSelected(item)} />
                 <div className="source-display" ref={el => this.sourceDisplay = el}></div>
             </div>

@@ -80,7 +80,7 @@ export class AdminPage extends UIBuilder.Component<AdminPageProps> {
                     <div className="add-folder-panel">
                         <h4>Index a folder</h4>
                         <div className="folder-input-section">
-                            <ComboBox prompt="Folder path:" placeholder="Type folder path here"
+                            <ComboBox prompt="Folder path:" placeholder="Type folder path here" isEditable={true}
                                       ref={el => this.folderCombo = el} suggestions={this.props.folderSuggestions} />
                             <div className="path-help">
                                 <label><InfoIcon />Path is case sensitive and must start with /projects. Use / to separate folders.</label>

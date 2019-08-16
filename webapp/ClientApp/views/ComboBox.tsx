@@ -4,11 +4,19 @@ import { addClassExclusively, concatClasses, isVisible, getOffset } from "./View
 import { KeyCodes } from "./KeyCodes";
 
 export interface ComboBoxProps extends UIBuilder.Props<ComboBox> {
-    value?: string;
+    /** The current value displayed by the ComboBox */
+    value?: any;
+    /** The label displayed above the ComboBox */
     prompt?: string;
+    /** The watermark to display */
     placeholder?: string;
+    /** Additional CSS class names */
     className?: string;
+    /** Items to display in the dropdown */
     suggestions?: any[];
+    /** Whether user can type in a new value. If false value must match one of the suggestions. */
+    isEditable?: boolean;
+    /** Method to call when an item is selected */
     onItemSelected?: (item: any) => void;
 }
 
@@ -103,7 +111,7 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
             setTimeout(() => {
                 this.populateDropDown('');
                 this.textInput.focus();
-            }, 0);
+            });
         }
     }
 
@@ -153,12 +161,15 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
         if (item) {
             this.value = item.dataset.val;
             this.textInput.value = this.value.toString();
-
-            if (this.props.onItemSelected)
-                this.props.onItemSelected(this.value);
-            const event = new CustomEvent('itemselected', { detail: this.value });
-            this.root.dispatchEvent(event);
+            this.onValueSelected(this.value);
         }
+    }
+
+    private onValueSelected(value: any): void {
+        if (this.props.onItemSelected)
+            this.props.onItemSelected(value);
+        const event = new CustomEvent('itemselected', { detail: value });
+        this.root.dispatchEvent(event);
     }
 
     private onTextBoxKeyDown(ev: KeyboardEvent): void {
@@ -188,10 +199,26 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
                 break;
             case KeyCodes.Tab:
             case KeyCodes.Enter:
-                let selected = this.dropDown.querySelector('.combo-highlighted') as HTMLElement;
-                if (selected) {
-                    this.onItemSelected(selected);
-                    this.filter = selected.innerText;
+                if (this.isDropDownVisible()) {
+                    let selected = this.dropDown.querySelector('.combo-highlighted') as HTMLElement;
+                    if (selected) {
+                        this.onItemSelected(selected);
+                        this.filter = selected.innerText;
+                        ev.stopPropagation();
+                        break;
+                    }
+                }
+                if (this.props.isEditable) {
+                    this.onValueSelected(this.textInput.value);
+                }
+                else {
+                    const value = this.textInput.value.toLowerCase();
+                    if (this.suggestions) {
+                        const foundItem = this.suggestions.find(s => s && s.toString().toLowerCase() === value);
+                        if (foundItem) {
+                            this.onValueSelected(foundItem);
+                        }
+                    }
                 }
                 ev.stopPropagation();
                 break;
