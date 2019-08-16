@@ -12,6 +12,7 @@ export interface SearchPageProps extends UIBuilder.Props<SearchPage> {
     onSearchClick: () => void;
     onManageClick: () => void;
     onFileClick: (path: string) => void;
+    onFolderChanged: (folder: string) => void;
 }
 
 export class SearchPage extends UIBuilder.Component<SearchPageProps> {
@@ -119,8 +120,8 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
         this.sourceCodeViewer.displaySourceCode(sourceCode, language, path);
     }
 
-    public displayFolderItems(items: string[]): void {
-        this.sourceCodeViewer.displayFolderItems(items);
+    public displayFolderItems(folder: string, items: string[]): void {
+        this.sourceCodeViewer.displayFolderItems(folder, items);
     }
 
     private getRendering(result: SearchResultItem[], noRowsMessage: string): JSX.Element {
@@ -195,6 +196,7 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
                     onSplitterMoved={() => this.onSplitterMoved()}
                     firstChild={<div className="search-result" ref={el => this.searchDisplay = el}></div> as HTMLElement}
                     secondChild={<SourceCodeViewer ref={el => this.sourceCodeViewer = el}
+                                                   onFolderChanged={folder => this.props.onFolderChanged(folder)}
                                                    onFileSelected={path => this.props.onFileClick(path)} /> as HTMLElement} />
             </div>
         )

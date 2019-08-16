@@ -18,7 +18,8 @@ export class SearchController extends MvcRouter.Controller {
         const props: SearchPageProps = {
             onSearchClick: () => this.onSearchClick(),
             onManageClick: () => this.onManageClick(),
-            onFileClick: path => this.onFileClick(path)
+            onFileClick: path => this.onFileClick(path),
+            onFolderChanged: folder => this.onFolderChanged(folder)
         };
         props.ref = component => {
             if (component) {
@@ -79,6 +80,10 @@ export class SearchController extends MvcRouter.Controller {
         // Get other items in folder
 
         const folder = Utils.getFolderFromFilePath(path);
+        this.onFolderChanged(folder);
+    }
+
+    private onFolderChanged(folder: string): void {
         fetch(`/eureka-service/api/engine/foldercontents?path=${encodeURIComponent(folder)}`)
             .then(response => {
                 if (response.status === 200) {
@@ -86,7 +91,7 @@ export class SearchController extends MvcRouter.Controller {
                 }
             })
             .then(result => {
-                this.searchPage.displayFolderItems(result);
+                this.searchPage.displayFolderItems(folder, result);
             })
             .catch(error => console.log(error));
     }

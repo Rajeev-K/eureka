@@ -16,6 +16,8 @@ export interface ComboBoxProps extends UIBuilder.Props<ComboBox> {
     suggestions?: any[];
     /** Whether user can type in a new value. If false value must match one of the suggestions. */
     isEditable?: boolean;
+    /** Method to call when user edits text in the text input. */
+    onTextEdited?: (text: string) => void;
     /** Method to call when an item is selected */
     onItemSelected?: (item: any) => void;
 }
@@ -236,6 +238,12 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
         this.outerRect.classList.add('combo-focus-style');
     }
 
+    private onTextBoxInput(): void {
+        if (this.props.onTextEdited) {
+            this.props.onTextEdited(this.textInput.value);
+        }
+    }
+
     private onTextBoxBlur(ev: FocusEvent): void {
         this.outerRect.classList.remove('combo-focus-style');
         if (document.activeElement !== this.dropDown)
@@ -254,7 +262,7 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
                         placeholder={this.props.placeholder} spellcheck={false}
                         onKeyDown={ev => this.onTextBoxKeyDown(ev)} onKeyUp={ev => this.onTextBoxKeyUp(ev)}
                         onFocus={ev => this.onTextBoxFocus(ev)} onBlur={ev => this.onTextBoxBlur(ev)}
-                        defaultValue={val} />
+                        onInput={ev => this.onTextBoxInput()} defaultValue={val} />
                     <div className="combo-chevron" style={chevronStyle} onMouseDown={ev => this.onChevronMouseDown(ev)}>
                        <i className="fa fa-chevron-down"></i>
                     </div>
