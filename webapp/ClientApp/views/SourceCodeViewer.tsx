@@ -52,7 +52,12 @@ export class SourceCodeViewer extends UIBuilder.Component<SourceCodeViewerProps>
     }
 
     private onItemSelected(item: string): void {
-        if (!item.endsWith("/")) {
+        if (item.endsWith("/")) {
+            if (this.props.onFolderChanged) {
+                this.props.onFolderChanged(item.substr(0, item.length - 1));
+            }
+        }
+        else {
             if (this.props.onFileSelected) {
                 this.props.onFileSelected(item);
             }
