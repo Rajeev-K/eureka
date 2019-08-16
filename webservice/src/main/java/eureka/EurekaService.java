@@ -15,6 +15,7 @@
 package eureka;
 
 import java.util.List;
+import java.util.Arrays;
 import java.util.ArrayList;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -213,10 +214,12 @@ public class EurekaService {
     public Response getFolderContents(@QueryParam("path") String path) {
         if (path == null)
             throw new BadRequestException("Path must be specified");
-        if (!path.startsWith("/projects"))
-            throw new BadRequestException("Path must start with /projects");
         try {
-            List<String> items = getItemsInFolder(path);
+            List<String> items;
+            if (!path.startsWith("/projects"))
+                items = Arrays.asList("/projects/");
+            else
+                items = getItemsInFolder(path);
             return Response.ok(items).build();
         }
         catch (IOException ex) {
