@@ -53,6 +53,8 @@ export class SearchController extends MvcRouter.Controller {
     }
 
     private onFileClick(path: string): void {
+        // Get file contents
+
         fetch(`/eureka-service/api/engine/file?path=${encodeURIComponent(path)}`)
             .then(response => {
                 if (response.status === 200) {
@@ -73,6 +75,20 @@ export class SearchController extends MvcRouter.Controller {
                 }
             })
             .catch(error => this.isLoaded() && this.searchPage.displayError(error));
+
+        // Get other items in folder
+
+        const folder = Utils.getFolderFromFilePath(path);
+        fetch(`/eureka-service/api/engine/foldercontents?path=${encodeURIComponent(folder)}`)
+            .then(response => {
+                if (response.status === 200) {
+                    return response.json();
+                }
+            })
+            .then(result => {
+                this.searchPage.displayFolderItems(result);
+            })
+            .catch(error => console.log(error));
     }
 
     private onSearchClick(): void {

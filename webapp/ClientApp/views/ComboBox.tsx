@@ -9,6 +9,7 @@ export interface ComboBoxProps extends UIBuilder.Props<ComboBox> {
     placeholder?: string;
     className?: string;
     suggestions?: any[];
+    onItemSelected?: (item: any) => void;
 }
 
 export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
@@ -49,6 +50,8 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
 
     public setSuggestions(suggestions: any[]): void {
         this.suggestions = suggestions;
+        const chevron = this.root.querySelector(".combo-chevron") as HTMLElement;
+        chevron.style.visibility = (suggestions && suggestions.length) ? "visible" : "hidden";
     }
 
     private populateDropDown(filter: string): void {
@@ -151,6 +154,8 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
             this.value = item.dataset.val;
             this.textInput.value = this.value.toString();
 
+            if (this.props.onItemSelected)
+                this.props.onItemSelected(this.value);
             const event = new CustomEvent('itemselected', { detail: this.value });
             this.root.dispatchEvent(event);
         }

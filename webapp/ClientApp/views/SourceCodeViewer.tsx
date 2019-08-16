@@ -3,6 +3,7 @@
 import { ComboBox } from "./ComboBox";
 
 export interface SourceCodeViewerProps extends UIBuilder.Props<SourceCodeViewer> {
+    onFileSelected: (path: string) => void;
 }
 
 export class SourceCodeViewer extends UIBuilder.Component<SourceCodeViewerProps> {
@@ -33,10 +34,15 @@ export class SourceCodeViewer extends UIBuilder.Component<SourceCodeViewerProps>
         this.filePicker.setValue(path);
     }
 
+    public displayFolderItems(items: string[]): void {
+        this.filePicker.setSuggestions(items);
+    }
+
     public render(): JSX.Element {
         return (
             <div className="source-code-viewer">
-                <ComboBox className="file-picker" ref={el => this.filePicker = el} />
+                <ComboBox className="file-picker" ref={el => this.filePicker = el}
+                          onItemSelected={item => this.props.onFileSelected(item)} />
                 <div className="source-display" ref={el => this.sourceDisplay = el}></div>
             </div>
         );

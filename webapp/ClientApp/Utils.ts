@@ -89,3 +89,8 @@ export function getLanguageFromPath(path: string): string {
     }
     return "plaintext";
 }
+
+export function getFolderFromFilePath(path: string): string {
+    const parts = path.split('/');
+    return parts.slice(0, parts.length - 1).join('/');
+}

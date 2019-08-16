@@ -119,6 +119,10 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
         this.sourceCodeViewer.displaySourceCode(sourceCode, language, path);
     }
 
+    public displayFolderItems(items: string[]): void {
+        this.sourceCodeViewer.displayFolderItems(items);
+    }
+
     private getRendering(result: SearchResultItem[], noRowsMessage: string): JSX.Element {
         if (!result || !result.length)
             return <div className="no-rows-message">{noRowsMessage}</div>;
@@ -190,7 +194,8 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
                 <SplitterControl className="result-splitter" ref={splitter => this.splitterControl = splitter}
                     onSplitterMoved={() => this.onSplitterMoved()}
                     firstChild={<div className="search-result" ref={el => this.searchDisplay = el}></div> as HTMLElement}
-                    secondChild={<SourceCodeViewer ref={el => this.sourceCodeViewer = el} /> as HTMLElement} />
+                    secondChild={<SourceCodeViewer ref={el => this.sourceCodeViewer = el}
+                                                   onFileSelected={path => this.props.onFileClick(path)} /> as HTMLElement} />
             </div>
         )
     }

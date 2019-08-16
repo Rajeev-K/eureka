@@ -8,6 +8,7 @@ $outline-color: #aaa;
 
 // Z indexes
 $z-dialog-mask: 999;
+$z-combo-dropdown: 9999;
 
 // Sizes
 $title-width: 130px;
@@ -219,7 +220,17 @@ button {
             input[type=text].combo-textbox {
                 font-family: Consolas, monospace;
                 padding-left: 18px;
+                color: #2b2b2b;
             }
+        }
+
+        .combo-dropdown-item {
+            font-family: Consolas, monospace;
+            padding-left: 18px;
+        }
+
+        .combo-dropdown {
+            max-height: 200px;
         }
     }
 
@@ -411,6 +422,7 @@ button {
 }
 
 .combo-box {
+    position: relative;
     font-size: 12px;
 
     .combo-prompt {
@@ -465,6 +477,7 @@ button {
     }
 
     .combo-dropdown {
+        z-index: $z-combo-dropdown;
         box-sizing: border-box;
         border: 1px solid $control-border-color;
         box-shadow: 1px 1px 2px 0px #bbb;
@@ -481,7 +494,7 @@ button {
     }
 
     .combo-dropdown-item {
-        padding: 5px 5px 6px 5px;
+        padding: 3px 5px 4px 5px;
 
         &:last-child {
             border-bottom: none;
