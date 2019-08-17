@@ -14,8 +14,8 @@ export interface ComboBoxProps extends UIBuilder.Props<ComboBox> {
     className?: string;
     /** Items to display in the dropdown */
     suggestions?: any[];
-    /** Whether user can type in a new value. If false value must match one of the suggestions. */
-    isEditable?: boolean;
+    /** If constrained then the value typed in bye the user must match one of the suggestions. */
+    constrain?: boolean;
     /** Method to call when user edits text in the text input. */
     onTextEdited?: (text: string) => void;
     /** Method to call when an item is selected */
@@ -66,7 +66,7 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
 
     private populateDropDown(filter: string): void {
         if (this.filter === filter) {
-            return;
+            return;   // Don't open dropdown if filter hasn't changed.
         }
         this.dropDown.innerHTML = '';
         if (this.suggestions) {
@@ -108,7 +108,7 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
             this.hideDropDown();
         }
         else {
-            delete this.filter;
+            this.filter = null;
             this.textInput.blur();
             setTimeout(() => {
                 this.populateDropDown('');
@@ -121,7 +121,7 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
         const element = ev.target as HTMLElement;
         if (element.classList.contains('combo-dropdown-item')) {
             this.onItemSelected(element);
-            setTimeout(() => this.textInput.focus(), 0);
+            setTimeout(() => this.textInput.focus());
         }
     }
 
@@ -190,11 +190,14 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
                         newIndex = (index === -1 || index === 0) ? items.length - 1 : index - 1;
                     else
                         newIndex = (index === -1 || index === items.length - 1) ? 0 : index + 1;
-                    addClassExclusively(items[newIndex], 'combo-highlighted');
+                    const item = items[newIndex] as HTMLElement;
+                    this.value = item.dataset.val;
+                    this.textInput.value = this.value.toString();
+                    addClassExclusively(item, 'combo-highlighted');
                     this.scrollSelectedItemIntoView();
                 }
                 else {
-                    delete this.filter;
+                    this.filter = null;
                     this.populateDropDown('');
                 }
                 ev.preventDefault();
@@ -210,17 +213,18 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
                         break;
                     }
                 }
-                if (this.props.isEditable) {
-                    this.onValueSelected(this.textInput.value);
-                }
-                else {
+                if (this.props.constrain) {
                     const value = this.textInput.value.toLowerCase();
                     if (this.suggestions) {
-                        const foundItem = this.suggestions.find(s => s && s.toString().toLowerCase() === value);
-                        if (foundItem) {
-                            this.onValueSelected(foundItem);
+                        const matchingItem = this.suggestions.find(s => s && s.toString().toLowerCase() === value);
+                        if (matchingItem) {
+                            this.onValueSelected(matchingItem);
                         }
                     }
+                }
+                else {
+                    // If not constrained the result does not have to match one of the displayed choices.
+                    this.onValueSelected(this.textInput.value);
                 }
                 ev.stopPropagation();
                 break;

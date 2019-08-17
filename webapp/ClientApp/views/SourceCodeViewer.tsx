@@ -13,6 +13,7 @@ export class SourceCodeViewer extends UIBuilder.Component<SourceCodeViewerProps>
     private editor: monaco.IEditor;
     private filePicker: ComboBox;
     private folder: string;
+    private childFolders = new Set();
 
     constructor(props: SourceCodeViewerProps) {
         super(props);
@@ -37,9 +38,24 @@ export class SourceCodeViewer extends UIBuilder.Component<SourceCodeViewerProps>
         this.filePicker.setValue(path);
     }
 
+    /** Paths that end with '/' are folders. We remove the trailing '/' and keep track of which paths represent folders.  */
+    private processFolderItems(items: string[]): string[] {
+        this.childFolders = new Set();
+        return items.map(item => {
+            if (item.endsWith('/')) {
+                const folder = item.substr(0, item.length - 1);
+                this.childFolders.add(folder);
+                return folder;
+            }
+            else {
+                return item;
+            }
+        });
+    }
+
     public displayFolderItems(folder: string, items: string[]): void {
         this.folder = folder;
-        this.filePicker.setSuggestions(items);
+        this.filePicker.setSuggestions(this.processFolderItems(items));
     }
 
     private onPathEdited(path: string): void {
@@ -52,12 +68,7 @@ export class SourceCodeViewer extends UIBuilder.Component<SourceCodeViewerProps>
     }
 
     private onItemSelected(item: string): void {
-        if (item.endsWith("/")) {
-            if (this.props.onFolderChanged) {
-                this.props.onFolderChanged(item.substr(0, item.length - 1));
-            }
-        }
-        else {
+        if (!this.childFolders.has(item)) {
             if (this.props.onFileSelected) {
                 this.props.onFileSelected(item);
             }
@@ -67,7 +78,7 @@ export class SourceCodeViewer extends UIBuilder.Component<SourceCodeViewerProps>
     public render(): JSX.Element {
         return (
             <div className="source-code-viewer">
-                <ComboBox className="file-picker" isEditable={true} ref={el => this.filePicker = el}
+                <ComboBox className="file-picker" constrain={true} ref={el => this.filePicker = el}
                           onTextEdited={text => this.onPathEdited(text)}
                           onItemSelected={item => this.onItemSelected(item)} />
                 <div className="source-display" ref={el => this.sourceDisplay = el}></div>
