@@ -211,22 +211,49 @@ button {
     display: flex;
     flex-direction: column;
 
+    .source-code-toolbar {
+        padding: 1px 0px 1px 5px;
+        display: flex;
+        flex-direction: row;
+
+        button {
+            border: none;
+            min-width: 30px;
+            padding: 6px 5px 6px 5px;
+            border-radius: 30px;
+            color: #666;
+            margin-right: 1px;
+
+            &:hover {
+                background-color: #eee;
+            }
+
+            &:disabled {
+                color: #ccc;
+            }
+        }
+
+        border-bottom: solid 1px #b3b3b3;
+    }
+
     .file-picker {
+        display: inline-block;
+        flex: 1;
+        margin-top: 2px;
+
         .combo-rect {
-            border-top: none;
-            border-left: none;
-            border-right: none;
+            border: none;
 
             input[type=text].combo-textbox {
                 font-family: Consolas, monospace;
-                padding-left: 18px;
+                padding-left: 10px;
                 color: #2b2b2b;
             }
         }
 
         .combo-dropdown-item {
             font-family: Consolas, monospace;
-            padding-left: 18px;
+            padding-left: 10px;
         }
 
         .combo-dropdown {
