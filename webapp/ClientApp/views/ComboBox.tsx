@@ -20,6 +20,7 @@ export interface ComboBoxProps extends UIBuilder.Props<ComboBox> {
     onTextEdited?: (text: string) => void;
     /** Method to call when an item is selected */
     onItemSelected?: (item: any) => void;
+    getItemIcon?: (item: any) => JSX.Element;
 }
 
 export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
@@ -64,6 +65,13 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
         chevron.style.visibility = (suggestions && suggestions.length) ? "visible" : "hidden";
     }
 
+    private getItemIcon(item: any): JSX.Element {
+        if (this.props.getItemIcon)
+            return this.props.getItemIcon(item);
+        else
+            return null;
+    }
+
     private populateDropDown(filter: string): void {
         if (this.filter === filter) {
             return;   // Don't open dropdown if filter hasn't changed.
@@ -75,7 +83,8 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
             for (const item of this.suggestions) {
                 const itemStr = item.toString();
                 if (itemStr.toLowerCase().indexOf(f) != -1) {
-                    const itemElement = <div className="combo-dropdown-item">{itemStr}</div>;
+                    const icon = this.getItemIcon(item);
+                    const itemElement = <div className="combo-dropdown-item">{icon}{itemStr}</div>;
                     itemElement.dataset.val = item;
                     this.dropDown.appendChild(itemElement);
                     ++count;
@@ -92,7 +101,7 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
     private hideDropDown(): void {
         this.dropDown.style.display = "none";
     }
-    
+
     private showDropDown(): void {
         this.dropDown.style.display = null;
         this.dropDown.style.minWidth = this.outerRect.offsetWidth + 'px';
@@ -157,7 +166,7 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
             this.whenScrolled = (new Date()).getTime();
         }
     }
-    
+
     private onItemSelected(item: HTMLElement): void {
         this.hideDropDown();
         if (item) {

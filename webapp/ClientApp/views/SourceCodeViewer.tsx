@@ -75,10 +75,18 @@ export class SourceCodeViewer extends UIBuilder.Component<SourceCodeViewerProps>
         }
     }
 
+    private getItemIcon(item: string): JSX.Element {
+        if (this.childFolders.has(item))
+            return <i className="combo-item-icon fas fa-folder"></i>;
+        else
+            return <i className="combo-item-icon far fa-file"></i>;
+    }
+
     public render(): JSX.Element {
         return (
             <div className="source-code-viewer">
                 <ComboBox className="file-picker" constrain={true} ref={el => this.filePicker = el}
+                          getItemIcon={item => this.getItemIcon(item)}
                           onTextEdited={text => this.onPathEdited(text)}
                           onItemSelected={item => this.onItemSelected(item)} />
                 <div className="source-display" ref={el => this.sourceDisplay = el}></div>

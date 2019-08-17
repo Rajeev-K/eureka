@@ -230,7 +230,21 @@ button {
         }
 
         .combo-dropdown {
-            max-height: 200px;
+            max-height: 195px;
+        }
+
+        .combo-item-icon {
+            width: 18px;
+            text-align: center;
+
+            &.fa-file {
+                color: #666;
+            }
+
+            &.fa-folder {
+                opacity: 0.5;
+                color: #cc7722;
+            }
         }
     }
 
