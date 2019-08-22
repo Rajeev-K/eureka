@@ -31,11 +31,25 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevCommitList;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.PersonIdent;
 
 // https://download.eclipse.org/jgit/site/5.0.3.201809091024-r/apidocs/index.html
+// https://github.com/centic9/jgit-cookbook
 
 @Path("/git")
 public class GitService {
+    private CommitHeader getCommitHeader(RevCommit commit) {
+        PersonIdent author = commit.getAuthorIdent();
+        return new CommitHeader(
+            commit.getName(),
+            commit.getCommitTime(),
+            author.getName(),
+            author.getEmailAddress(),
+            commit.getShortMessage(),
+            commit.getFullMessage()
+        );
+    }
+
     @GET
     @Path("/history")
     @Produces(MediaType.APPLICATION_JSON)
@@ -59,12 +73,12 @@ public class GitService {
             ObjectId head = repository.resolve(Constants.HEAD);
             Iterable<RevCommit> commits = git.log().add(head).addPath(sourceRelativePath.toString()).call();
 
-            List<String> messages = new ArrayList<String>();
+            List<CommitHeader> headers = new ArrayList<CommitHeader>();
             for (RevCommit revCommit : commits) {
-                messages.add(revCommit.getFullMessage());
+                headers.add(getCommitHeader(revCommit));
             }
 
-            return Response.ok(messages).build();
+            return Response.ok(headers).build();
         }
         catch (IOException ex) {
             throw new InternalServerErrorException(ex.getMessage());
