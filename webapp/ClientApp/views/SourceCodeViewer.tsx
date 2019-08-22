@@ -44,6 +44,7 @@ export class SourceCodeViewer extends UIBuilder.Component<SourceCodeViewerProps>
                 renderLineHighlight: false,
                 value: sourceCode
             });
+            this.editor.focus();
         });
         this.filePicker.setValue(path);
 
