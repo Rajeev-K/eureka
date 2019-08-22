@@ -23,13 +23,18 @@ import javax.ws.rs.BadRequestException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.api.LogCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevCommitList;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.PersonIdent;
 
@@ -50,6 +55,25 @@ public class GitService {
         );
     }
 
+    /** Given full path to a file, returns git repo and path relative to the repo. */
+    private GitData getGitRepoAndPath(String fullPath) throws IOException {
+        File sourceCodeFile = new File(fullPath);
+
+        FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder().findGitDir(sourceCodeFile);
+        File gitDir = repositoryBuilder.getGitDir();
+        if (gitDir == null)
+            throw new BadRequestException("No git repository found");
+
+        GitData gitData = new GitData();
+        gitData.repo = repositoryBuilder.build();
+
+        java.nio.file.Path gitDirPath = gitDir.toPath();
+        java.nio.file.Path repoRelativePath = gitDirPath.getParent().relativize(sourceCodeFile.toPath());
+        gitData.relativePath = repoRelativePath.toString();
+
+        return gitData;
+    }
+
     @GET
     @Path("/history")
     @Produces(MediaType.APPLICATION_JSON)
@@ -58,20 +82,11 @@ public class GitService {
             throw new BadRequestException("Missing query parameter: path");
         }
         try {
-            File sourceCodeFile = new File(path);
-            FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder().findGitDir(sourceCodeFile);
-            File gitDir = repositoryBuilder.getGitDir();
-            if (gitDir == null)
-                throw new BadRequestException("No git repository found");
-            Repository repository = repositoryBuilder.build();
+            GitData gitData = getGitRepoAndPath(path);
 
-            java.nio.file.Path gitDirPath = gitDir.toPath();
-            java.nio.file.Path sourceFilePath = Paths.get(path);
-            java.nio.file.Path sourceRelativePath = gitDirPath.getParent().relativize(sourceFilePath);
-
-            Git git = new Git(repository);
-            ObjectId head = repository.resolve(Constants.HEAD);
-            Iterable<RevCommit> commits = git.log().add(head).addPath(sourceRelativePath.toString()).call();
+            Git git = new Git(gitData.repo);
+            ObjectId head = gitData.repo.resolve(Constants.HEAD);
+            Iterable<RevCommit> commits = git.log().add(head).addPath(gitData.relativePath).call();
 
             List<CommitHeader> headers = new ArrayList<CommitHeader>();
             for (RevCommit revCommit : commits) {
@@ -87,4 +102,51 @@ public class GitService {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/fileAtRevision")
+    public String getFileContents(@QueryParam("path") String path, @QueryParam("revision") String revision) {
+        if (path == null)
+            throw new BadRequestException("Path must be specified");
+        if (!path.startsWith("/projects"))
+            throw new BadRequestException("Path must start with /projects");
+        if (revision == null)
+            throw new BadRequestException("Revision must be specified");
+        try {
+            GitData gitData = getGitRepoAndPath(path);
+            byte[] data = fetchBlob(gitData.repo, revision, gitData.relativePath);
+            return new String(data, StandardCharsets.UTF_8);
+        }
+        catch (IOException ex) {
+            throw new BadRequestException("The file could not be opened.");
+        }
+    }
+
+    private byte[] fetchBlob(Repository repo, String revSpec, String path) throws IOException {
+        final ObjectId revision = repo.resolve(revSpec);
+        ObjectReader reader = repo.newObjectReader();
+        try {
+            // Get the commit object corresponding to revision.
+            RevWalk walk = new RevWalk(reader);
+            RevCommit commit = walk.parseCommit(revision);
+
+            // Get a reference to this commit's tree.
+            RevTree tree = commit.getTree();
+            // Open a tree walk and filter to exactly one path.
+            TreeWalk treewalk = TreeWalk.forPath(reader, path, tree);
+            if (treewalk == null)
+                throw new BadRequestException("File was not found in git commit tree.");
+
+            return reader.open(treewalk.getObjectId(0)).getBytes();
+        }
+        finally {
+            reader.close();
+        }
+    }
+}
+
+class GitData {
+    public Repository repo;
+    public String relativePath;
 }
