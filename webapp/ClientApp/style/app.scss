@@ -1,6 +1,6 @@
 // Colors
 $brand-color: #0082df;
-$logo-color: #0067bb;
+$title-color: #0067bb;
 $icon-gray: #777;
 $selected-row-color: #cbe6f9;
 $control-border-color: #b3b3b3;
@@ -35,7 +35,7 @@ label {
 }
 
 .page-title {
-    color: $logo-color;
+    color: $title-color;
     font-size: 24px;
     font-weight: 700;
     display: inline-block;
@@ -293,7 +293,7 @@ button {
     text-align: center;
 
     .welcome-logo {
-        color: $logo-color;
+        color: $title-color;
         font-weight: bold;
     }
 }
@@ -622,4 +622,45 @@ button {
 .unsupported-browser {
     padding: 5px 5px 5px 25px;
     color: firebrick;
+}
+
+.history-page {
+    margin: 10px 25px 10px 25px;
+
+    h1 {
+        font-size: 17px;
+        color: $title-color;
+        margin-bottom: 5px;
+    }
+
+    .error-message {
+        color: firebrick;
+        font-size: 14px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .commit-path {
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+
+    table {
+        font-size: 14px;
+        border-collapse: collapse;
+        width: 100%;
+        cursor: default;
+
+        td {
+            padding: 3px;
+            border-bottom: solid 1px #ddd;
+        }
+
+        tr:first-child {
+            td {
+                border-top: solid 1px #ddd;
+            }
+        }
+    }
 }

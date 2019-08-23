@@ -13,6 +13,7 @@ export interface SearchPageProps extends UIBuilder.Props<SearchPage> {
     onManageClick: () => void;
     onFileClick: (path: string) => void;
     onFolderChanged: (folder: string) => void;
+    onHistoryClicked: (path: string) => void;
 }
 
 export class SearchPage extends UIBuilder.Component<SearchPageProps> {
@@ -196,6 +197,7 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
                     onSplitterMoved={() => this.onSplitterMoved()}
                     firstChild={<div className="search-result" ref={el => this.searchDisplay = el}></div> as HTMLElement}
                     secondChild={<SourceCodeViewer ref={el => this.sourceCodeViewer = el}
+                                                   onHistoryClicked={path => this.props.onHistoryClicked(path)}
                                                    onFolderChanged={folder => this.props.onFolderChanged(folder)}
                                                    onFileSelected={path => this.props.onFileClick(path)} /> as HTMLElement} />
             </div>

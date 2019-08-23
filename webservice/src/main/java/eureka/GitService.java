@@ -62,7 +62,7 @@ public class GitService {
         FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder().findGitDir(sourceCodeFile);
         File gitDir = repositoryBuilder.getGitDir();
         if (gitDir == null)
-            throw new BadRequestException("No git repository found");
+            throw new BadRequestException("This file is not in a git repository.");
 
         GitData gitData = new GitData();
         gitData.repo = repositoryBuilder.build();
