@@ -19,7 +19,8 @@ export class SearchController extends MvcRouter.Controller {
             onSearchClick: () => this.onSearchClick(),
             onManageClick: () => this.onManageClick(),
             onFileClick: path => this.onFileClick(path),
-            onFolderChanged: folder => this.onFolderChanged(folder)
+            onFolderChanged: folder => this.onFolderChanged(folder),
+            onHistoryClicked: path => this.onHistoryClicked(path)
         };
         props.ref = component => {
             if (component) {
@@ -113,6 +114,15 @@ export class SearchController extends MvcRouter.Controller {
                 }
             })
             .catch(error => this.isLoaded() && this.searchPage.displayError(error));
+    }
+
+    private onHistoryClicked(path: string): void {
+        const height = window.innerHeight;
+        const width = window.innerWidth;
+        const left = window.screenLeft + 15;
+        const top = window.screenTop;
+        const spec = `width=${width}, height=${height}, left=${left}, top=${top}`;
+        window.open(`/search/history?path=${encodeURIComponent(path)}`, "eureka-git", spec);
     }
 
     public onWindowResize(): void {

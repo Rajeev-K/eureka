@@ -1,5 +1,5 @@
 
-const MaxExtLen = 4;
+const MaxExtLen = 5;
 
 function isValidExtension(ext: string): boolean {
     if (ext.length < 1 || ext.length > MaxExtLen)
@@ -11,29 +11,16 @@ function isValidExtension(ext: string): boolean {
 
 /**
  * Gets filename extension such as .java or .tsx
- * Allows multi-segmented extensions such as .d.ts unless oneSegmentOnly is set to true.
  * Returns null if path is null. Returns empty string if path has no extension.
  */
-export function getFilenameExtension(path: string, oneSegmentOnly?: boolean): string {
+export function getFilenameExtension(path: string): string {
     if (!path)
         return null;
-    const elements = path.split('/');
-    const filename = elements[elements.length - 1].toLowerCase();
-    const parts = filename.split('.');
-    if (parts.length === 1)
-        return '';
-    let ext = '';
-    const ext1 = parts[parts.length - 1];
-    if (isValidExtension(ext1)) {
-        ext = ext1;
-        if (!oneSegmentOnly && parts.length > 2) {
-            const ext2 = parts[parts.length - 2];
-            if (isValidExtension(ext2)) {
-                ext = ext2 + '.' + ext;
-            }
-        }
-    }
-    return ext ? ('.' + ext) : ext;
+    const lastSlashIndex = path.lastIndexOf('/');
+    const filename = lastSlashIndex === -1 ? path : path.substring(lastSlashIndex + 1);
+    const dotIndex = filename.lastIndexOf('.');
+    const ext = dotIndex === -1 ? '' : filename.substring(dotIndex + 1);
+    return isValidExtension(ext) ? '.' + ext : '';
 }
 
 const extensionMap = {

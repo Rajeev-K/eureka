@@ -2,6 +2,8 @@
 
 import { SearchController } from "./Controllers/SearchController";
 import { AdminController } from "./Controllers/AdminController";
+import { HistoryController } from "./Controllers/HistoryController";
+import { DiffController } from "./Controllers/DiffController";
 
 export class App extends MvcRouter.App {
     constructor() {
@@ -13,6 +15,8 @@ export class App extends MvcRouter.App {
         const router = this.getRouter();
         router.addRoute("/", SearchController);
         router.addRoute("/admin", AdminController);
+        router.addRoute("/history", HistoryController);
+        router.addRoute("/diff", DiffController);
 
         this.setupEventHandlers();
 

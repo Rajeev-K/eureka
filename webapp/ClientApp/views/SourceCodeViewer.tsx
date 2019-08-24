@@ -6,6 +6,7 @@ import * as Utils from "../Utils";
 export interface SourceCodeViewerProps extends UIBuilder.Props<SourceCodeViewer> {
     onFileSelected: (path: string) => void;
     onFolderChanged: (newFolder: string) => void;
+    onHistoryClicked: (path: string) => void;
 }
 
 export class SourceCodeViewer extends UIBuilder.Component<SourceCodeViewerProps> {
@@ -14,6 +15,7 @@ export class SourceCodeViewer extends UIBuilder.Component<SourceCodeViewerProps>
     private filePicker: ComboBox;
     private backButton: HTMLButtonElement;
     private forwardButton: HTMLButtonElement;
+    private historyButton: HTMLButtonElement;
     private folder: string;
     private backStack: string[] = [];   // Note: currently displayed file is at the top of this stack.
     private forwardStack: string[] = [];
@@ -32,6 +34,7 @@ export class SourceCodeViewer extends UIBuilder.Component<SourceCodeViewerProps>
     private enableDisableButtons(): void {
         this.backButton.disabled = this.backStack.length < 2;
         this.forwardButton.disabled = this.forwardStack.length < 1;
+        this.historyButton.disabled = this.backStack.length < 1;
     }
 
     public displaySourceCode(sourceCode: string, language: string, path: string): void {
@@ -112,6 +115,14 @@ export class SourceCodeViewer extends UIBuilder.Component<SourceCodeViewerProps>
         }
     }
 
+    private onHistoryClick(): void {
+        if (this.backStack.length > 0) {
+            if (this.props.onHistoryClicked) {
+                this.props.onHistoryClicked(this.backStack[this.backStack.length - 1]);
+            }
+        }
+    }
+
     private getItemIcon(item: string): JSX.Element {
         if (this.childFolders.has(item))
             return <i className="combo-item-icon fas fa-folder"></i>;
@@ -123,10 +134,12 @@ export class SourceCodeViewer extends UIBuilder.Component<SourceCodeViewerProps>
         return (
             <div className="source-code-viewer">
                 <div className="source-code-toolbar">
-                    <button ref={el => this.backButton = el}
+                    <button ref={el => this.backButton = el} title="Back"
                             onClick={() => this.onBackClick()}><i className="fas fa-arrow-left"></i></button>
-                    <button ref={el => this.forwardButton = el}
+                    <button ref={el => this.forwardButton = el} title="Forward"
                             onClick={() => this.onForwardClick()}><i className="fas fa-arrow-right"></i></button>
+                    <button ref={el => this.historyButton = el} title="Git History"
+                            onClick={() => this.onHistoryClick()}><i className="fas fa-history"></i></button>
                     <ComboBox className="file-picker" constrain={true} ref={el => this.filePicker = el}
                               getItemIcon={item => this.getItemIcon(item)}
                               onTextEdited={text => this.onPathEdited(text)}
