@@ -2,6 +2,7 @@
 
 // Usage examples:
 // GET    http://localhost:8888/eureka-service/api/git/history?path=/foo/bar
+// GET    http://localhost:8888/eureka-service/api/git/fileAtRevision?path=/foo/bar&revision=123fedc
 
 package eureka;
 

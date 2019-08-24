@@ -1,7 +1,7 @@
 // Copyright (c) 2019-present, Rajeev-K.
 
 import { CommonHeader } from "./CommonHeader";
-import { SearchResultItem } from "../models/Models";
+import { SearchResultItem } from "../models/SearchResultItem";
 import { FilterControl, Filter } from "./FilterControl";
 import { SplitterControl } from "./SplitterControl";
 import { SourceCodeViewer } from "./SourceCodeViewer";

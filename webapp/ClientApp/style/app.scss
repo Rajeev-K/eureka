@@ -628,7 +628,7 @@ button {
     margin: 10px 25px 10px 25px;
 
     h1 {
-        font-size: 17px;
+        font-size: 18px;
         color: $title-color;
         margin-bottom: 5px;
     }
@@ -662,5 +662,37 @@ button {
                 border-top: solid 1px #ddd;
             }
         }
+
+        .selected-row {
+            background-color: $selected-row-color;
+        }
+
+        tr:hover {
+            background-color: lighten($selected-row-color, 5%);
+        }
+    }
+}
+
+.diff-page {
+    display: flex;
+    flex-direction: column;
+
+    h1 {
+        font-size: 18px;
+        color: $title-color;
+        margin-bottom: 5px;
+    }
+
+    .error-message {
+        color: firebrick;
+        font-size: 14px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .diff-display {
+        height: 100vh;
+        flex: 1;
     }
 }
