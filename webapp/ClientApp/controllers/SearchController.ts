@@ -117,12 +117,7 @@ export class SearchController extends MvcRouter.Controller {
     }
 
     private onHistoryClicked(path: string): void {
-        const height = window.innerHeight;
-        const width = window.innerWidth;
-        const left = window.screenLeft + 15;
-        const top = window.screenTop;
-        const spec = `width=${width}, height=${height}, left=${left}, top=${top}`;
-        window.open(`/search/history?path=${encodeURIComponent(path)}`, "eureka-git", spec);
+        Utils.openWindow(`/search/history?path=${encodeURIComponent(path)}`, "eureka-git");
     }
 
     public onWindowResize(): void {

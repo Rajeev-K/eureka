@@ -59,11 +59,6 @@ export class HistoryController extends MvcRouter.Controller {
             return;
         const hash1 = this.commits[index].hashCode;
         const hash2 = this.commits[index + 1].hashCode;
-        const height = window.innerHeight;
-        const width = window.innerWidth;
-        const left = window.screenLeft + 15;
-        const top = window.screenTop;
-        const spec = `width=${width}, height=${height}, left=${left}, top=${top}`;
-        window.open(`/search/diff?path=${encodeURIComponent(this.path)}&hash1=${hash1}&hash2=${hash2}`, "eureka-diff", spec);
+        Utils.openWindow(`/search/diff?path=${encodeURIComponent(this.path)}&hash1=${hash1}&hash2=${hash2}`, "eureka-diff");
     }
 }

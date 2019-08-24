@@ -81,3 +81,19 @@ export function getFolderFromFilePath(path: string): string {
     const parts = path.split('/');
     return parts.slice(0, parts.length - 1).join('/');
 }
+
+export function isStandaloneMode() {
+    return (window.matchMedia('(display-mode: standalone)').matches);
+}
+
+export function openWindow(url: string, windowName: string) {
+    let features = null;
+    if (isStandaloneMode()) {
+        const height = window.innerHeight;
+        const width = window.innerWidth;
+        const left = window.screenLeft + 15;
+        const top = window.screenTop;
+        features = `width=${width}, height=${height}, left=${left}, top=${top}`;
+    }
+    window.open(url, windowName, features);
+}
