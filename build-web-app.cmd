@@ -1,1 +1,1 @@
-docker build -t eurekasearch -f Dockerfile-web-app .
+docker build -t eurekasearch -f web-app-image/Dockerfile .

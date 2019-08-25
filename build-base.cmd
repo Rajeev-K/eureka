@@ -1,1 +1,1 @@
-docker build -t eureka-base -f Dockerfile-base .
+docker build -t eurekasearch -f base-image/Dockerfile .

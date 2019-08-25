@@ -3,7 +3,7 @@ FROM openjdk:8-alpine
 
 # Versions
 ENV LUCENE_VERSION 8.2.0
-ENV TOMCAT_VERSION 9.0.22
+ENV TOMCAT_VERSION 9.0.24
 
 # Folder locations
 ENV LUCENE_HOME /usr/local/share/lucene
