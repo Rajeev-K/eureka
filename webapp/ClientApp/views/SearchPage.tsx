@@ -97,13 +97,7 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
     }
 
     public displayError(error: any): void {
-        let message: string;
-        if (typeof error === 'string')
-            message = error;
-        else if (error.message)
-            message = error.message;
-        else
-            message = JSON.stringify(error);
+        const message = Utils.getErrorMessageFrom(error);
         this.errorDisplay.title = message;
         this.errorDisplay.innerText = message.replace(/\n/g, ' ');
     }

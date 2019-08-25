@@ -3,6 +3,7 @@
 import { CommonHeader } from "./CommonHeader";
 import { InfoIcon } from "./Icons";
 import { ComboBox } from "./ComboBox";
+import * as Utils from "../Utils";
 
 export interface AdminPageProps extends UIBuilder.Props<AdminPage> {
     onDeleteIndexClick: () => void;
@@ -37,14 +38,7 @@ export class AdminPage extends UIBuilder.Component<AdminPageProps> {
             this.resultDisplay.classList.add('error-message');
         else
             this.resultDisplay.classList.remove('error-message');
-        let message: string;
-        if (typeof result === 'string')
-            message = result;
-        else if (result.message)
-            message = result.message;
-        else
-            message = JSON.stringify(result);
-        this.resultDisplay.innerText = message;
+        this.resultDisplay.innerText = Utils.getErrorMessageFrom(result);
     }
 
     public displayProgress(progress: any): void {

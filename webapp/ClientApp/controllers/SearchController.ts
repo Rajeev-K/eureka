@@ -38,20 +38,18 @@ export class SearchController extends MvcRouter.Controller {
     private initPage(): void {
         fetch('/eureka-service/api/engine/status')
             .then(response => response.json())
+            .then(result => Utils.validateResult(result))
             .then(result => {
                 if (this.isLoaded()) {
                     if (result.fileCount === 0)
                         this.searchPage.displayWelcomeScreen();
                 }
-            });
+            })
+            .catch(error => this.isLoaded() && this.searchPage.displayError(error));
     }
 
     private onManageClick(): void {
         this.app.navigate('/admin');
-    }
-
-    private getLanguageFromPath(path: string): string {
-        return Utils.getLanguageFromPath(path);
     }
 
     private onFileClick(path: string): void {
@@ -65,14 +63,12 @@ export class SearchController extends MvcRouter.Controller {
                     return response.text();
                 }
                 else {
-                    if (this.isLoaded())
-                        this.searchPage.displayError("The file could not be opened.");
-                    return '';
+                    throw Error("The file could not be opened.");
                 }
             })
             .then(text => {
                 if (this.isLoaded()) {
-                    const language = this.getLanguageFromPath(path);
+                    const language = Utils.getLanguageFromPath(path);
                     this.searchPage.displaySourceCode(text, language, path);
                 }
             })
@@ -86,11 +82,8 @@ export class SearchController extends MvcRouter.Controller {
 
     private onFolderChanged(folder: string): void {
         fetch(`/eureka-service/api/engine/foldercontents?path=${encodeURIComponent(folder)}`)
-            .then(response => {
-                if (response.status === 200) {
-                    return response.json();
-                }
-            })
+            .then(response => response.json())
+            .then(result => Utils.validateResult(result))
             .then(result => {
                 this.searchPage.displayFolderItems(folder, result);
             })
@@ -105,12 +98,10 @@ export class SearchController extends MvcRouter.Controller {
         }
         fetch(`/eureka-service/api/engine/search?query=${encodeURIComponent(query)}`)
             .then(response => response.json())
+            .then(result => Utils.validateResult(result))
             .then(result => {
                 if (this.isLoaded()) {
-                    if (result.error)
-                        this.searchPage.displayError(result);
-                    else
-                        this.searchPage.displayResult(result);
+                    this.searchPage.displayResult(result);
                 }
             })
             .catch(error => this.isLoaded() && this.searchPage.displayError(error));

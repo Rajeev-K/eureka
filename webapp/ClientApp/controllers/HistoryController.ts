@@ -38,15 +38,11 @@ export class HistoryController extends MvcRouter.Controller {
     private initPage(): void {
         fetch(`/eureka-service/api/git/history?path=${encodeURIComponent(this.path)}`)
             .then(response => response.json())
+            .then(result => Utils.validateResult(result))
             .then(result => {
                 if (this.isLoaded()) {
-                    if (result.error) {
-                        this.historyPage.displayError(result);
-                    }
-                    else {
-                        this.commits = result;
-                        this.historyPage.displayHistory(result);
-                    }
+                    this.commits = result;
+                    this.historyPage.displayHistory(result);
                 }
             })
             .catch(error => this.isLoaded() && this.historyPage.displayError(error));

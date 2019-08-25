@@ -7,6 +7,7 @@ import { ExtensionsDialog } from "../views/ExtensionsDialog";
 import { FoldersDialog } from "../views/FoldersDialog";
 import { IndexRequest } from "../models/IndexRequest";
 import * as LocalStorage from "../LocalStorage";
+import * as Utils from "../Utils";
 
 const SkippableFoldersKey = "skippablefolders";
 const IndexableExtensionsKey = "indexableextensions";
@@ -52,14 +53,13 @@ export class AdminController extends MvcRouter.Controller {
         const path = "/projects";
         fetch(`/eureka-service/api/engine/foldercontents?path=${encodeURIComponent(path)}`)
             .then(response => response.json())
+            .then(result => Utils.validateResult(result))
             .then(result => {
                 if (this.isLoaded()) {
-                    if (result.error)
-                        this.adminPage.displayError(result);
-                    else
-                        this.adminPage.setFolderSuggestions(this.extractFolders(result));
+                    this.adminPage.setFolderSuggestions(this.extractFolders(result));
                 }
-            });
+            })
+            .catch(error => this.isLoaded() && this.adminPage.displayError(error));
 
         this.skippableFolders = LocalStorage.get(SkippableFoldersKey);
         if (this.skippableFolders) {
@@ -68,12 +68,14 @@ export class AdminController extends MvcRouter.Controller {
         else {
             fetch('/eureka-service/api/engine/skippablefolders')
                 .then(response => response.json())
+                .then(result => Utils.validateResult(result))
                 .then(folders => {
                     if (this.isLoaded()) {
                         this.skippableFolders = folders;
                         this.adminPage.setSkippableFolders(folders);
                     }
-                });
+                })
+                .catch(error => this.isLoaded() && this.adminPage.displayError(error));
         }
 
         this.indexableExtensions = LocalStorage.get(IndexableExtensionsKey);
@@ -83,30 +85,25 @@ export class AdminController extends MvcRouter.Controller {
         else {
             fetch('/eureka-service/api/engine/indexableextensions')
                 .then(response => response.json())
+                .then(result => Utils.validateResult(result))
                 .then(extensions => {
                     if (this.isLoaded()) {
                         this.indexableExtensions = extensions;
                         this.adminPage.setIndexableExtensions(extensions);
                     }
-                });
+                })
+                .catch(error => this.isLoaded() && this.adminPage.displayError(error));
         }
     }
 
     private onDeleteIndexClick(): void {
-        const options = {
-            method: 'DELETE'
-        };
         MessageBox.confirm("Confirm: Delete search index?")
-            .then(() => fetch('/eureka-service/api/engine/index', options))
+            .then(() => fetch('/eureka-service/api/engine/index', { method: 'DELETE' }))
             .then(response => response.json())
+            .then(result => Utils.validateResult(result))
             .then(result => {
-                if (result.error) {
-                    this.adminPage.displayError(result);
-                }
-                else {
-                    this.adminPage.displayResult(result);
-                    this.displayIndexStatus();
-                }
+                this.adminPage.displayResult(result);
+                this.displayIndexStatus();
             })
             .catch(error => {
                 if (this.isLoaded()) {
@@ -119,19 +116,16 @@ export class AdminController extends MvcRouter.Controller {
     private displayIndexStatus(): void {
         fetch('/eureka-service/api/engine/status')
             .then(response => response.json())
+            .then(result => Utils.validateResult(result))
             .then(result => {
                 if (this.isLoaded()) {
-                    if (result.error) {
-                        this.adminPage.displayError(result);
-                    }
-                    else {
-                        if (result.indexingInProgress)
-                            this.displayIndexingProgress();
-                        else
-                            this.adminPage.displayCount(`There are ${result.fileCount} files in the index.`);
-                    }
+                    if (result.indexingInProgress)
+                        this.displayIndexingProgress();
+                    else
+                        this.adminPage.displayCount(`There are ${result.fileCount} files in the index.`);
                 }
-            });
+            })
+            .catch(error => this.isLoaded() && this.adminPage.displayError(error));
     }
 
     private displayIndexingProgress(): void {
@@ -173,12 +167,10 @@ export class AdminController extends MvcRouter.Controller {
         };
         fetch('/eureka-service/api/engine/index', options)
             .then(response => response.json())
+            .then(result => Utils.validateResult(result))
             .then(result => {
                 if (this.isLoaded()) {
-                    if (result.error)
-                        this.adminPage.displayError(result);
-                    else
-                        this.displayIndexingProgress();
+                    this.displayIndexingProgress();
                 }
             })
             .catch(error => this.isLoaded() && this.adminPage.displayError(error));

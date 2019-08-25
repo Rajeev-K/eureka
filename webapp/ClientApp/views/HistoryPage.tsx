@@ -21,14 +21,7 @@ export class HistoryPage extends UIBuilder.Component<HistoryPageProps> {
     }
 
     public displayError(error: any): void {
-        let message: string;
-        if (typeof error === 'string')
-            message = error;
-        else if (error.message)
-            message = error.message;
-        else
-            message = JSON.stringify(error);
-        this.errorDisplay.innerText = message;
+        this.errorDisplay.innerText = Utils.getErrorMessageFrom(error);
     }
 
     private onHistoryTableClick(ev): void {

@@ -41,6 +41,7 @@ const extensionMap = {
     ".asp":     "html",
     ".aspx":    "html",
     ".java":    "java",
+    ".scala":   "java",
     ".js":      "javascript",
     ".jsx":     "javascript",
     ".less":    "less",
@@ -96,4 +97,20 @@ export function openWindow(url: string, windowName: string) {
         features = `width=${width}, height=${height}, left=${left}, top=${top}`;
     }
     window.open(url, windowName, features);
+}
+
+/** Checks if the result is an ErrorResult (see ErrorResult.java) and if so throws an exception. */
+export function validateResult(result: any, message?: string): any {
+    if (result.error)
+        throw Error(message || result.message);
+    return result;
+}
+
+export function getErrorMessageFrom(error: any): string {
+    if (typeof error === 'string')
+        return error;
+    else if (error.message)
+        return error.message;
+    else
+        return JSON.stringify(error);
 }
