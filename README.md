@@ -22,8 +22,9 @@ That's it! You are now running eureka! In your web browser go to http://localhos
 * Filter search results, for example to exclude test folders and only show certain file types.
 * Use the integrated full-fledged source code viewer (Monaco editor from VSCode) to view your source code.
 * Feedback during the indexing process. In the web interface you can see what is being indexed. Other tools just disappear for hours, leaving you to wonder what it is doing, or whether it is doing anything at all.
+* Supports git: you can view change history and diffs if your files are in a local git repo.
 
 ## How to build
 If you would like to build the Docker image on your machine follow the [build](Build.md) instructions.
 
-![Screenshot of search page](/images/eureka_search_screen.png?raw=true)
+![Screenshot of search page](/screenshots/eureka_search_screen.png?raw=true)
