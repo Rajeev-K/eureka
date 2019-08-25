@@ -126,8 +126,7 @@ public class GitService {
 
     private byte[] fetchBlob(Repository repo, String revSpec, String path) throws IOException {
         final ObjectId revision = repo.resolve(revSpec);
-        ObjectReader reader = repo.newObjectReader();
-        try {
+        try (ObjectReader reader = repo.newObjectReader()) {
             // Get the commit object corresponding to revision.
             RevWalk walk = new RevWalk(reader);
             RevCommit commit = walk.parseCommit(revision);
@@ -140,9 +139,6 @@ public class GitService {
                 throw new BadRequestException("File was not found in git commit tree.");
 
             return reader.open(treewalk.getObjectId(0)).getBytes();
-        }
-        finally {
-            reader.close();
         }
     }
 }

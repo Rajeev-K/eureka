@@ -141,9 +141,8 @@ public class SearchEngine {
      * @file The full path to the file.
      */
     public void addFileToIndex(Path filePath, long lastModified) throws IOException {
-        InputStream stream = null;
-        try {
-            stream = Files.newInputStream(filePath);
+        try (InputStream stream = Files.newInputStream(filePath)) {
+
             Document doc = new Document();
 
             doc.add(new StringField(PathField, filePath.toString(), Field.Store.YES));
@@ -163,10 +162,6 @@ public class SearchEngine {
                 // Replace old file matching the exact path, if present.
                 indexWriter.updateDocument(new Term(PathField, filePath.toString()), doc);
             }
-        }
-        finally {
-            if (stream != null)
-                stream.close();
         }
     }
 
