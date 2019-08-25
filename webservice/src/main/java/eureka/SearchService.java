@@ -42,7 +42,7 @@ import java.io.IOException;
 import org.apache.lucene.queryparser.classic.ParseException;
 
 @Path("/engine")
-public class EurekaService {
+public class SearchService {
     @GET
     public String getMessage() {
         return "Hello from eureka! " + new java.util.Date();
