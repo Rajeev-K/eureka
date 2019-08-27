@@ -4,6 +4,7 @@ import { CommonHeader } from "./CommonHeader";
 import { SplitterControl } from "./SplitterControl";
 import { addClassExclusively } from "./ViewUtils";
 import { CommitHeader } from "../models/CommitHeader";
+import { LoadingAnimation } from "./Icons";
 import * as Utils from "../Utils";
 
 export interface HistoryPageProps extends UIBuilder.Props<HistoryPage> {
@@ -15,12 +16,21 @@ export class HistoryPage extends UIBuilder.Component<HistoryPageProps> {
     private root: HTMLElement;
     private commitsDisplay: HTMLElement;
     private errorDisplay: HTMLElement;
+    private loadingAnimation: LoadingAnimation;
 
     constructor(props) {
         super(props);
     }
 
+    private removeLoadingAnimation(): void {
+        if (this.loadingAnimation) {
+            this.loadingAnimation.remove();
+            this.loadingAnimation = null;
+        }
+    }
+
     public displayError(error: any): void {
+        this.removeLoadingAnimation();
         this.errorDisplay.innerText = Utils.getErrorMessageFrom(error);
     }
 
@@ -34,6 +44,7 @@ export class HistoryPage extends UIBuilder.Component<HistoryPageProps> {
     }
 
     public displayHistory(history: CommitHeader[]): void {
+        this.removeLoadingAnimation();
         const itemsElements = history.map((commit, index) => {
             const time = new Date(commit.time * 1000);
             return (
@@ -63,6 +74,7 @@ export class HistoryPage extends UIBuilder.Component<HistoryPageProps> {
                 <div className="commit-path">{this.props.path}</div>
                 <div className="error-message" ref={el => this.errorDisplay = el}></div>
                 <div ref={el => this.commitsDisplay = el}></div>
+                <LoadingAnimation ref={el => this.loadingAnimation = el} />
             </div>
         )
     }

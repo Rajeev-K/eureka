@@ -3,6 +3,7 @@
 import { CommonHeader } from "./CommonHeader";
 import { SplitterControl } from "./SplitterControl";
 import { addClassExclusively } from "./ViewUtils";
+import { LoadingAnimation } from "./Icons";
 import * as Utils from "../Utils";
 
 export interface DiffPageProps extends UIBuilder.Props<DiffPage> {
@@ -14,23 +15,26 @@ export class DiffPage extends UIBuilder.Component<DiffPageProps> {
     private errorDisplay: HTMLElement;
     private diffDisplay: HTMLElement;
     private diffEditor: monaco.IDiffEditor;
+    private loadingAnimation: LoadingAnimation;
 
     constructor(props) {
         super(props);
     }
 
+    private removeLoadingAnimation(): void {
+        if (this.loadingAnimation) {
+            this.loadingAnimation.remove();
+            this.loadingAnimation = null;
+        }
+    }
+
     public displayError(error: any): void {
-        let message: string;
-        if (typeof error === 'string')
-            message = error;
-        else if (error.message)
-            message = error.message;
-        else
-            message = JSON.stringify(error);
-        this.errorDisplay.innerText = message;
+        this.removeLoadingAnimation();
+        this.errorDisplay.innerText = Utils.getErrorMessageFrom(error);
     }
 
     public displayDiff(text1: string, text2: string): void {
+        this.removeLoadingAnimation();
         this.diffDisplay.innerHTML = '';
         require(['vs/editor/editor.main'], monaco => {
             const modifiedModel = monaco.editor.createModel(text1, "text/plain");
@@ -50,6 +54,7 @@ export class DiffPage extends UIBuilder.Component<DiffPageProps> {
             <div className="diff-page" ref={el => this.root = el}>
                 <div className="error-message" ref={el => this.errorDisplay = el}></div>
                 <div className="diff-display" ref={el => this.diffDisplay = el}></div>
+                <LoadingAnimation ref={el => this.loadingAnimation = el} />
             </div>
         )
     }
