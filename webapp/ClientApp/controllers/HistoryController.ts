@@ -42,7 +42,10 @@ export class HistoryController extends MvcRouter.Controller {
             .then(result => {
                 if (this.isLoaded()) {
                     this.commits = result;
-                    this.historyPage.displayHistory(result);
+                    if (result.length === 0)
+                        this.historyPage.displayError("This file has no change history.");
+                    else
+                        this.historyPage.displayHistory(result);
                 }
             })
             .catch(error => this.isLoaded() && this.historyPage.displayError(error));
