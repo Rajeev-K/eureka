@@ -44,16 +44,17 @@ import org.apache.lucene.search.CollectionStatistics;
 import org.apache.lucene.store.FSDirectory;
 
 public class SearchEngine {
-    final static int MAX_RESULTS = 1000;
-    final static Logger log = Logger.getLogger(SearchEngine.class);
+    private static final int MAX_RESULTS = 1000;
+    private static final String INDEX_PATH = "/projects/eureka-index";
+    private static final String CONTENTS_FIELD = "contents";
+    private static final String PATH_FIELD = "path";
+    private static final String MODIFIED_FIELD = "modified";
+    private static final Logger log = Logger.getLogger(SearchEngine.class);
     private static volatile SearchEngine instance;
     private SearcherManager searcherManager;
     private Analyzer analyzer;   // Analyzer is thread-safe
     private IndexWriter indexWriter;   // IndexWriter is thread-safe
     private volatile String currentlyIndexing;
-    private static final String IndexPath = "/projects/eureka-index";
-    private static final String ContentsField = "contents";
-    private static final String PathField = "path";
     private String[] indexableExtensions = {
         ".ts", ".tsx", ".js",
         ".cs", ".java", ".scala", ".cpp", ".h", ".hh", ".c", ".cc", ".cxx", ".hpp", ".hxx",
@@ -95,7 +96,7 @@ public class SearchEngine {
     private void bringOnline() throws IOException {
         analyzer = new SourceCodeAnalyzer();
 
-        FSDirectory directory = FSDirectory.open(Paths.get(IndexPath));
+        FSDirectory directory = FSDirectory.open(Paths.get(INDEX_PATH));
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
         config.setOpenMode(OpenMode.CREATE_OR_APPEND);
         indexWriter = new IndexWriter(directory, config);
@@ -145,22 +146,22 @@ public class SearchEngine {
 
             Document doc = new Document();
 
-            doc.add(new StringField(PathField, filePath.toString(), Field.Store.YES));
+            doc.add(new StringField(PATH_FIELD, filePath.toString(), Field.Store.YES));
 
-            doc.add(new LongPoint("modified", lastModified));
+            doc.add(new LongPoint(MODIFIED_FIELD, lastModified));
 
             // Add the contents of the file to a field. Specify a Reader, so that the text of the file is tokenized
             // and indexed, but not stored. Note that FileReader expects the file to be in UTF-8 encoding.
             // If that's not the case searching for special characters will fail.
             InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-            doc.add(new TextField(ContentsField, new BufferedReader(reader)));
+            doc.add(new TextField(CONTENTS_FIELD, new BufferedReader(reader)));
 
             if (indexWriter.getConfig().getOpenMode() == OpenMode.CREATE) {
                 indexWriter.addDocument(doc);
             }
             else {
                 // Replace old file matching the exact path, if present.
-                indexWriter.updateDocument(new Term(PathField, filePath.toString()), doc);
+                indexWriter.updateDocument(new Term(PATH_FIELD, filePath.toString()), doc);
             }
         }
     }
@@ -242,7 +243,7 @@ public class SearchEngine {
     public long getDocCount() throws IOException {
         IndexSearcher searcher = searcherManager.acquire();
         try {
-            CollectionStatistics stats = searcher.collectionStatistics(ContentsField);
+            CollectionStatistics stats = searcher.collectionStatistics(CONTENTS_FIELD);
             if (stats == null)
                 return 0;
             return stats.docCount();
@@ -258,7 +259,7 @@ public class SearchEngine {
             throw new RuntimeException("Can't perform search because search engine is offline.");
         IndexSearcher searcher = searcherManager.acquire();
         try {
-            QueryParser parser = new QueryParser(ContentsField, analyzer);
+            QueryParser parser = new QueryParser(CONTENTS_FIELD, analyzer);
             Query query = parser.parse(q);
             TopDocs results = searcher.search(query, MAX_RESULTS);
             ScoreDoc[] hits = results.scoreDocs;
@@ -266,7 +267,7 @@ public class SearchEngine {
             List<SearchResult> searchResults = new ArrayList<SearchResult>();
             for (int i = 0; i < hits.length; i++) {
                 Document doc = searcher.doc(hits[i].doc);
-                String path = doc.get(PathField);
+                String path = doc.get(PATH_FIELD);
                 searchResults.add(new SearchResult(path, hits[i].score));
             }
             return searchResults;
