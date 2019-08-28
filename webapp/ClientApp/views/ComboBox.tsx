@@ -14,7 +14,7 @@ export interface ComboBoxProps extends UIBuilder.Props<ComboBox> {
     className?: string;
     /** Items to display in the dropdown */
     suggestions?: any[];
-    /** If constrained then the value typed in bye the user must match one of the suggestions. */
+    /** If constrained then the value typed in by the user must match one of the suggestions. */
     constrain?: boolean;
     /** Method to call when user edits text in the text input. */
     onTextEdited?: (text: string) => void;
