@@ -2,7 +2,7 @@
 
 export interface Filter {
     extensions?: string[];
-    include?: string;
+    include?: string[];
     exclude?: string[];
 }
 
@@ -32,10 +32,10 @@ export class FilterControl extends UIBuilder.Component<FilterControlProps> {
 
         let filter: Filter = {
             extensions: selectedExtensions,
-            include: this.includeInput.value.trim(),
+            include: this.includeInput.value.split(',').map(s => s.trim()).filter(s => s),
             exclude: this.excludeInput.value.split(',').map(s => s.trim()).filter(s => s)
         };
-        if (!filter.extensions && !filter.include && filter.exclude.length === 0)
+        if (!filter.extensions && filter.include.length === 0 && filter.exclude.length === 0)
             filter = null;
 
         this.props.onFilterChanged(filter);
@@ -77,12 +77,12 @@ export class FilterControl extends UIBuilder.Component<FilterControlProps> {
                     <div className="filter-input">
                         <div className="filter-label">Only show paths that contain:</div>
                         <div><input type="text" spellcheck={false}
-                                    placeholder="Type part of path here" ref={el => this.includeInput = el} /></div>
+                                    placeholder="Enter comma-separated list" ref={el => this.includeInput = el} /></div>
                     </div>
                     <div className="filter-input">
                         <div className="filter-label">Exclude paths that contain: </div>
                         <div><input type="text" spellcheck={false}
-                                    placeholder="Comma-separated list" ref={el => this.excludeInput = el} /></div>
+                                    placeholder="Enter comma-separated list" ref={el => this.excludeInput = el} /></div>
                     </div>
                 </div>
                 <div className="checkbox-row">{checkboxes}</div>

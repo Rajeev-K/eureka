@@ -69,9 +69,11 @@ export class SearchPage extends UIBuilder.Component<SearchPageProps> {
                 if (!extensions[Utils.getFilenameExtension(path)])
                     return false;
             }
-            if (filter.include) {
-                if (path.indexOf(filter.include) === -1)
-                    return false;
+            if (filter.include && filter.include.length) {
+                for (const inc of filter.include) {
+                    if (path.indexOf(inc) === -1)
+                        return false;
+                }
             }
             if (filter.exclude && filter.exclude.length) {
                 for (const ex of filter.exclude) {
