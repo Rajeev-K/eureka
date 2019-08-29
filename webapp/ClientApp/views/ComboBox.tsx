@@ -29,7 +29,6 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
     private dropDown: HTMLElement;
     private outerRect: HTMLElement;
     private prevText: string;   // Text input value when keydown event is received
-    private filter: string;
     private value: any;
     private suggestions: any[];
     private whenScrolled = 0;
@@ -74,9 +73,6 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
     }
 
     private populateDropDown(filter: string): void {
-        if (this.filter === filter) {
-            return;   // Don't open dropdown if filter hasn't changed.
-        }
         this.dropDown.innerHTML = '';
         if (this.suggestions) {
             let count = 0;
@@ -95,7 +91,6 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
                 this.showDropDown();
             else
                 this.hideDropDown();
-            this.filter = filter;
         }
     }
 
@@ -118,7 +113,6 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
             this.hideDropDown();
         }
         else {
-            this.filter = null;
             this.textInput.blur();
             setTimeout(() => {
                 this.populateDropDown('');
@@ -208,7 +202,6 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
                     this.scrollSelectedItemIntoView();
                 }
                 else {
-                    this.filter = null;
                     this.populateDropDown('');
                 }
                 ev.preventDefault();
@@ -219,7 +212,6 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
                     let selected = this.dropDown.querySelector('.combo-highlighted') as HTMLElement;
                     if (selected) {
                         this.onItemSelected(selected);
-                        this.filter = selected.innerText;
                         ev.stopPropagation();
                         break;
                     }
