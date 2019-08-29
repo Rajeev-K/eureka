@@ -28,6 +28,7 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
     private textInput: HTMLInputElement;
     private dropDown: HTMLElement;
     private outerRect: HTMLElement;
+    private prevText: string;   // Text input value when keydown event is received
     private filter: string;
     private value: any;
     private suggestions: any[];
@@ -82,7 +83,7 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
             const f = filter.toLowerCase();
             for (const item of this.suggestions) {
                 const itemStr = item.toString();
-                if (itemStr.toLowerCase().indexOf(f) != -1) {
+                if (itemStr.toLowerCase().indexOf(f) !== -1) {
                     const icon = this.getItemIcon(item);
                     const itemElement = <div className="combo-dropdown-item">{icon}{itemStr}</div>;
                     itemElement.dataset.val = item;
@@ -184,6 +185,7 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
     }
 
     private onTextBoxKeyDown(ev: KeyboardEvent): void {
+        this.prevText = this.textInput.value;
         switch (ev.which) {
             case KeyCodes.Escape:
                 this.hideDropDown();
@@ -241,8 +243,9 @@ export class ComboBox extends UIBuilder.Component<ComboBoxProps> {
     }
 
     private onTextBoxKeyUp(ev: KeyboardEvent): void {
-        if (ev.which !== KeyCodes.DownArrow && ev.which !== KeyCodes.UpArrow && ev.which !== KeyCodes.Escape) {
-            this.value = this.textInput.value;
+        const newText = this.textInput.value;
+        if (ev.which !== KeyCodes.DownArrow && ev.which !== KeyCodes.UpArrow && newText !== this.prevText) {
+            this.value = newText;
             this.populateDropDown(this.value);
         }
     }
