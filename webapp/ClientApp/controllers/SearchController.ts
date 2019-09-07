@@ -36,7 +36,7 @@ export class SearchController extends MvcRouter.Controller {
     }
 
     private initPage(): void {
-        fetch('/eureka-service/api/engine/status')
+        fetch('/eureka-service/api/searchengine/status')
             .then(response => response.json())
             .then(result => Utils.validateResult(result))
             .then(result => {
@@ -55,7 +55,7 @@ export class SearchController extends MvcRouter.Controller {
     private onFileClick(path: string): void {
         // Get file contents
 
-        fetch(`/eureka-service/api/engine/file?path=${encodeURIComponent(path)}`)
+        fetch(`/eureka-service/api/searchengine/file?path=${encodeURIComponent(path)}`)
             .then(response => {
                 if (response.status === 200) {
                     if (this.isLoaded())
@@ -81,7 +81,7 @@ export class SearchController extends MvcRouter.Controller {
     }
 
     private onFolderChanged(folder: string): void {
-        fetch(`/eureka-service/api/engine/foldercontents?path=${encodeURIComponent(folder)}`)
+        fetch(`/eureka-service/api/searchengine/foldercontents?path=${encodeURIComponent(folder)}`)
             .then(response => response.json())
             .then(result => Utils.validateResult(result))
             .then(result => {
@@ -96,7 +96,7 @@ export class SearchController extends MvcRouter.Controller {
             MessageBox.show("Enter search terms then press Search.");
             return;
         }
-        fetch(`/eureka-service/api/engine/search?query=${encodeURIComponent(query)}`)
+        fetch(`/eureka-service/api/searchengine/search?query=${encodeURIComponent(query)}`)
             .then(response => response.json())
             .then(result => Utils.validateResult(result))
             .then(result => {

@@ -1,16 +1,16 @@
 // Copyright (c) 2019-present, Rajeev-K.
 
 // Usage examples:
-// GET    http://localhost:8888/eureka-service/api/engine
-// GET    http://localhost:8888/eureka-service/api/engine/status
-// GET    http://localhost:8888/eureka-service/api/engine/search?query=const
-// GET    http://localhost:8888/eureka-service/api/engine/file?path=/projects/foo
-// POST   http://localhost:8888/eureka-service/api/engine/index
-// DELETE http://localhost:8888/eureka-service/api/engine/index
-// GET    http://localhost:8888/eureka-service/api/engine/foldercontents
-// GET    http://localhost:8888/eureka-service/api/engine/skippablefolders
-// GET    http://localhost:8888/eureka-service/api/engine/indexableextensions
-// GET    http://localhost:8888/eureka-service/api/engine/progress
+// GET    http://localhost:8888/eureka-service/api/searchengine
+// GET    http://localhost:8888/eureka-service/api/searchengine/status
+// GET    http://localhost:8888/eureka-service/api/searchengine/search?query=const
+// GET    http://localhost:8888/eureka-service/api/searchengine/file?path=/projects/foo
+// POST   http://localhost:8888/eureka-service/api/searchengine/index
+// DELETE http://localhost:8888/eureka-service/api/searchengine/index
+// GET    http://localhost:8888/eureka-service/api/searchengine/foldercontents
+// GET    http://localhost:8888/eureka-service/api/searchengine/skippablefolders
+// GET    http://localhost:8888/eureka-service/api/searchengine/indexableextensions
+// GET    http://localhost:8888/eureka-service/api/searchengine/progress
 
 package eureka;
 
@@ -41,7 +41,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.io.IOException;
 import org.apache.lucene.queryparser.classic.ParseException;
 
-@Path("/engine")
+@Path("/searchengine")
 public class SearchService {
     @GET
     public String getMessage() {

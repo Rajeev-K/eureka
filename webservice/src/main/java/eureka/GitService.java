@@ -39,6 +39,7 @@ import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.PersonIdent;
 
+// jgit documentation:
 // https://download.eclipse.org/jgit/site/5.0.3.201809091024-r/apidocs/index.html
 // https://github.com/centic9/jgit-cookbook
 

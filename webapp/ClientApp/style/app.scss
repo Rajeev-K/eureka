@@ -130,7 +130,7 @@ button {
 .search-page {
     box-sizing: border-box;
     height: 100vh;
-    padding-top: 8px;
+    padding-top: 16px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -299,7 +299,7 @@ button {
 }
 
 .admin-page {
-    padding: 8px 10px 50px 25px;
+    padding: 16px 10px 50px 23px;
     font-size: 13px;
 
     .breadcrumb {

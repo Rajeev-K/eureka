@@ -51,7 +51,7 @@ export class AdminController extends MvcRouter.Controller {
         this.displayIndexStatus();
 
         const path = "/projects";
-        fetch(`/eureka-service/api/engine/foldercontents?path=${encodeURIComponent(path)}`)
+        fetch(`/eureka-service/api/searchengine/foldercontents?path=${encodeURIComponent(path)}`)
             .then(response => response.json())
             .then(result => Utils.validateResult(result))
             .then(result => {
@@ -66,7 +66,7 @@ export class AdminController extends MvcRouter.Controller {
             this.adminPage.setSkippableFolders(this.skippableFolders);
         }
         else {
-            fetch('/eureka-service/api/engine/skippablefolders')
+            fetch('/eureka-service/api/searchengine/skippablefolders')
                 .then(response => response.json())
                 .then(result => Utils.validateResult(result))
                 .then(folders => {
@@ -83,7 +83,7 @@ export class AdminController extends MvcRouter.Controller {
             this.adminPage.setIndexableExtensions(this.indexableExtensions);
         }
         else {
-            fetch('/eureka-service/api/engine/indexableextensions')
+            fetch('/eureka-service/api/searchengine/indexableextensions')
                 .then(response => response.json())
                 .then(result => Utils.validateResult(result))
                 .then(extensions => {
@@ -98,7 +98,7 @@ export class AdminController extends MvcRouter.Controller {
 
     private onDeleteIndexClick(): void {
         MessageBox.confirm("Confirm: Delete search index?")
-            .then(() => fetch('/eureka-service/api/engine/index', { method: 'DELETE' }))
+            .then(() => fetch('/eureka-service/api/searchengine/index', { method: 'DELETE' }))
             .then(response => response.json())
             .then(result => Utils.validateResult(result))
             .then(result => {
@@ -114,7 +114,7 @@ export class AdminController extends MvcRouter.Controller {
     }
 
     private displayIndexStatus(): void {
-        fetch('/eureka-service/api/engine/status')
+        fetch('/eureka-service/api/searchengine/status')
             .then(response => response.json())
             .then(result => Utils.validateResult(result))
             .then(result => {
@@ -132,7 +132,7 @@ export class AdminController extends MvcRouter.Controller {
         this.adminPage.displayCount('(pending)');
         this.adminPage.displayResult('Indexing is in progress.');
         if (window['EventSource']) {
-            const es = new EventSource('/eureka-service/api/engine/progress');
+            const es = new EventSource('/eureka-service/api/searchengine/progress');
             es.addEventListener('message', ev => {
                 this.isLoaded() && this.adminPage.displayProgress('Currently indexing ' + ev.data);
             });
@@ -165,7 +165,7 @@ export class AdminController extends MvcRouter.Controller {
                 'Content-Type': 'application/json'
             }
         };
-        fetch('/eureka-service/api/engine/index', options)
+        fetch('/eureka-service/api/searchengine/index', options)
             .then(response => response.json())
             .then(result => Utils.validateResult(result))
             .then(result => {
