@@ -15,7 +15,7 @@ RUN mkdir -p ${TOMCAT_HOME}/webapps/eureka-service
 COPY webservice/target/eureka-service/ ${TOMCAT_HOME}/webapps/eureka-service/
 
 # Install webapp
-RUN mkdir -p ${TOMCAT_HOME}/webapps/search/lib
+RUN mkdir -p ${TOMCAT_HOME}/webapps/search
 COPY webapp/wwwroot/ ${TOMCAT_HOME}/webapps/search/
 
 EXPOSE 8080
