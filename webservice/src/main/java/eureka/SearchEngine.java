@@ -37,6 +37,9 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.TopDocs;
@@ -48,6 +51,7 @@ public class SearchEngine {
     private static final String INDEX_PATH = "/projects/eureka-index";
     private static final String CONTENTS_FIELD = "contents";
     private static final String PATH_FIELD = "path";
+    private static final String FILENAME_FIELD = "filename";
     private static final String MODIFIED_FIELD = "modified";
     private static final Logger log = Logger.getLogger(SearchEngine.class);
     private static volatile SearchEngine instance;
@@ -147,6 +151,8 @@ public class SearchEngine {
             Document doc = new Document();
 
             doc.add(new StringField(PATH_FIELD, filePath.toString(), Field.Store.YES));
+
+            doc.add(new StringField(FILENAME_FIELD, filePath.getFileName().toString().toLowerCase(), Field.Store.NO));
 
             doc.add(new LongPoint(MODIFIED_FIELD, lastModified));
 
@@ -259,8 +265,16 @@ public class SearchEngine {
             throw new RuntimeException("Can't perform search because search engine is offline.");
         IndexSearcher searcher = searcherManager.acquire();
         try {
+            Query filenameQuery = new TermQuery(new Term(FILENAME_FIELD, q.toLowerCase()));
+
             QueryParser parser = new QueryParser(CONTENTS_FIELD, analyzer);
-            Query query = parser.parse(q);
+            Query contentsQuery = parser.parse(q);
+
+            BooleanQuery.Builder builder = new BooleanQuery.Builder();
+            builder.add(contentsQuery, BooleanClause.Occur.SHOULD);
+            builder.add(filenameQuery, BooleanClause.Occur.SHOULD);
+            BooleanQuery query = builder.build();
+
             TopDocs results = searcher.search(query, MAX_RESULTS);
             ScoreDoc[] hits = results.scoreDocs;
 
