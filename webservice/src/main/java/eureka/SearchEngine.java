@@ -37,6 +37,7 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.BoostQuery;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.TermQuery;
@@ -270,10 +271,10 @@ public class SearchEngine {
             QueryParser parser = new QueryParser(CONTENTS_FIELD, analyzer);
             Query contentsQuery = parser.parse(q);
 
-            BooleanQuery.Builder builder = new BooleanQuery.Builder();
-            builder.add(contentsQuery, BooleanClause.Occur.SHOULD);
-            builder.add(filenameQuery, BooleanClause.Occur.SHOULD);
-            BooleanQuery query = builder.build();
+            Query query = new BooleanQuery.Builder()
+                .add(contentsQuery, BooleanClause.Occur.SHOULD)
+                .add(new BoostQuery(filenameQuery, 3.0F), BooleanClause.Occur.SHOULD)
+                .build();
 
             TopDocs results = searcher.search(query, MAX_RESULTS);
             ScoreDoc[] hits = results.scoreDocs;
