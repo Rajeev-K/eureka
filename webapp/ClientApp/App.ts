@@ -1,9 +1,9 @@
 // Copyright (c) 2019-present, Rajeev-K.
 
-import { SearchController } from "./Controllers/SearchController";
-import { AdminController } from "./Controllers/AdminController";
-import { HistoryController } from "./Controllers/HistoryController";
-import { DiffController } from "./Controllers/DiffController";
+import { SearchController } from "./controllers/SearchController";
+import { AdminController } from "./controllers/AdminController";
+import { HistoryController } from "./controllers/HistoryController";
+import { DiffController } from "./controllers/DiffController";
 
 export class App extends MvcRouter.App {
     constructor() {

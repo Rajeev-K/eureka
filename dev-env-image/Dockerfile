@@ -1,7 +1,7 @@
 FROM eureka-base
 
 # Versions
-ENV MAVEN_VERSION 3.6.1
+ENV MAVEN_VERSION 3.6.3
 
 # Maven locations
 ENV MAVEN_HOME /usr/local/share/maven
