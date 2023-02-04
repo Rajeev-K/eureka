@@ -2,8 +2,8 @@
 FROM openjdk:8-alpine
 
 # Versions
-ENV LUCENE_VERSION 8.7.0
-ENV TOMCAT_VERSION 9.0.40
+ENV LUCENE_VERSION 8.11.2
+ENV TOMCAT_VERSION 9.0.71
 
 # Folder locations
 ENV LUCENE_HOME /usr/local/share/lucene
@@ -25,7 +25,7 @@ RUN set -xe \
 # Install tomcat
 RUN set -xe \
   && cd /tmp \
-  && wget http://mirror.cc.columbia.edu/pub/software/apache/tomcat/tomcat-9/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz \
+  && wget https://dlcdn.apache.org/tomcat/tomcat-9/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz \
   && tar -zxvf apache-tomcat-${TOMCAT_VERSION}.tar.gz \
   && rm *.gz \
   && mkdir -p `dirname ${TOMCAT_HOME}` \
