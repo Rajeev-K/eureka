@@ -1,5 +1,5 @@
 # Alpine is a tiny Linux, it is the distro of choice for containers
-FROM openjdk:8-alpine
+FROM adoptopenjdk/openjdk11:alpine
 
 # Versions
 ENV LUCENE_VERSION 8.11.2
